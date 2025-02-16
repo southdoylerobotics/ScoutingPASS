@@ -155,11 +155,6 @@ var config_data = `
             },
             "defaultValue": "x"
         },
-        {
-            "name": "Hit Chain",
-            "code": "THC",
-            "type": "bool"
-        }
     ],
     "postmatch": [
         {
@@ -220,6 +215,11 @@ var config_data = `
         {
             "name": "Died/Immobilized",
             "code": "die",
+            "type": "bool"
+        },
+        {
+            "name": "got coral stuck for more than 10 seconds",
+            "code": "corstu",
             "type": "bool"
         },
         {
