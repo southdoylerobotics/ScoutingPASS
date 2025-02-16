@@ -237,7 +237,7 @@ var config_data = `
             "code": "da",
             "type": "bool"
         },
-            {
+        {
         "name": "Citrus Rank",
         "code": "cr",
         "type": "radio",
