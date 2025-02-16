@@ -236,7 +236,7 @@ var config_data = `
             "name": "Dropped Algae (>2)",
             "code": "da",
             "type": "bool"
-        }
+        },
             {
         "name": "Citrus Rank",
         "code": "cr",
