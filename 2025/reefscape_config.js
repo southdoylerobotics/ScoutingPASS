@@ -11,14 +11,14 @@ var config_data = `
             "type": "scouter",
             "size": 5,
             "maxSize": 5,
-            "required": true
+            "required": "true"
         },
         {
             "name": "Event",
             "code": "e",
             "type": "event",
             "defaultValue": "2025ilpe",
-            "required": true
+            "required": "true"
         },
         {
             "name": "Match Level",
@@ -30,7 +30,7 @@ var config_data = `
                 "f": "Finals"
             },
             "defaultValue": "qm",
-            "required": true
+            "required": "true"
         },
         {
             "name": "Match #",
@@ -38,7 +38,7 @@ var config_data = `
             "type": "match",
             "min": 1,
             "max": 150,
-            "required": true
+            "required": "true"
         },
         {
             "name": "Robot",
@@ -52,7 +52,7 @@ var config_data = `
                 "r3": "Red-3",
                 "b3": "Blue-3"
             },
-            "required": true
+            "required": "true"
         },
         {
             "name": "Team #",
