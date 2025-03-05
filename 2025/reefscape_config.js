@@ -17,7 +17,7 @@ var config_data = `
             "name": "Event",
             "code": "e",
             "type": "event",
-            "defaultValue": "2025nhsal",
+            "defaultValue": "2025arli",
             "required": "true"
         },
         {
