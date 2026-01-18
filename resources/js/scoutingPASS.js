@@ -194,7 +194,35 @@ function addCounter(table, idx, name, data) {
   button2.setAttribute("onclick", "counter(this.parentElement, 1)");
   button2.setAttribute("value", "+");
   cell2.appendChild(button2);
+// ============================================================
+  // START NEW CODE: Add +5 and +10 buttons for Fuel
+  // ============================================================
+  
+  // We check if the name of the field contains the word "Fuel"
+  if (name.includes("Fuel")) {
+    
+    // Create +5 Button
+    var button5 = document.createElement("input");
+    button5.setAttribute("type", "button");
+    // We pass '5' to the counter function
+    button5.setAttribute("onclick", "counter(this.parentElement, 5)"); 
+    button5.setAttribute("value", "+5");
+    // Add a little styling to separate it
+    button5.setAttribute("style", "margin-left: 5px; background-color: #ddd;"); 
+    cell2.appendChild(button5);
 
+    // Create +10 Button
+    var button10 = document.createElement("input");
+    button10.setAttribute("type", "button");
+    // We pass '10' to the counter function
+    button10.setAttribute("onclick", "counter(this.parentElement, 10)");
+    button10.setAttribute("value", "+10");
+    button10.setAttribute("style", "margin-left: 5px; background-color: #bbb;");
+    cell2.appendChild(button10);
+  }
+  // ============================================================
+  // END NEW CODE
+  // ============================================================
   if (data.hasOwnProperty('cycleTimer')) {
     if (data.cycleTimer != "") {
       inp = document.createElement('input');
@@ -1432,3 +1460,4 @@ window.onload = function () {
     }
   }
 };
+
