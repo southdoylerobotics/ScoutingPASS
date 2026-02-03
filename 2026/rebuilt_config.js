@@ -66,18 +66,15 @@ var config_data = `
     }
   ],
   "auton": [
-    { "name": "Auto Shooting Location",
-      "code": "asl",
-      "type": "clickable_image",
-      "filename": "2026/half_field.png",
-      "dimensions": "7 10",
-      "allowableResponses": "1 2 3 4 8 9 10 11 15 16 17 18 22 23 24 25 29 30 31 32 36 37 38 39 43 44 45 46 50 51 52 53 57 58 59 60 64 65 66 67",
-      "shape": "circle 5 black red true"
-    },
     { "name": "Fuel Scored",
       "code": "afs",
       "type": "counter"
     },
+    { "name": "Too Many Fuel to Count (>50)",
+      "code": "tm",
+      "type": "bool"
+    },
+    
     { "name": "Climb (L1)",
       "code": "ac",
       "type": "radio",
@@ -114,6 +111,11 @@ var config_data = `
       "code": "tfs",
       "type": "counter"
     },
+    { "name": "Too Many Fuel to Count (>50)",
+      "code": "tmf",
+      "type": "bool"
+    },
+    
     { "name": "Pickup from Depot",
       "code": "tfd",
       "type": "bool"
@@ -156,7 +158,7 @@ var config_data = `
       "choices": {
         "1": "1 (best)<br>",
         "2": "2<br>",
-        "3": "3<br>",
+        "3": "3<br>"
       },
       "defaultValue":"3"
     },
