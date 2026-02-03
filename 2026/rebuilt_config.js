@@ -226,7 +226,7 @@ var config_data = `
       "min": 0,
       "max": 100
     },
-    { "name": "Match Review Needed?",
+    { "name": "Match Review Needed? Too hard to scout? Fell asleep? Went to bathroom? Not paying attention?",
       "code": "mrn",
       "type": "bool"
     },
