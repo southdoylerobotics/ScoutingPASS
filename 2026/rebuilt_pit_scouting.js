@@ -26,7 +26,13 @@ var config_data = `
     },
     { "name": "# of Batteries",
       "code": "nob",
+      "type": "number",
+      "defaultValue": "0"
+    },
+    { "name": "Max Capacity of Fuel",
+      "code": "mcf",
       "type": "number"
+      "defaultValue": "0"
     },
     { "name": "Comments",
       "code": "co",
