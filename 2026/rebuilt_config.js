@@ -150,6 +150,16 @@ var config_data = `
     }
   ],
   "postmatch": [
+  { "name": "Citrus Ranking",
+      "code": "cr",
+      "type": "radio",
+      "choices": {
+        "1": "1 (best)<br>",
+        "2": "2<br>",
+        "3": "3<br>",
+      },
+      "defaultValue":"3"
+    },
     { "name": "Driver Skill",
       "code": "ds",
       "type": "radio",
@@ -201,11 +211,6 @@ var config_data = `
       "code": "tip",
       "type": "bool"
     },
-    { "name": "Make good<br>alliance partner?",
-      "tooltip": "Would you want this robot on your alliance in eliminations?",
-      "code": "all",
-      "type": "bool"
-    },
     { "name": "Was Defended",
       "code": "def",
       "type": "bool"
@@ -220,6 +225,10 @@ var config_data = `
       "type": "number",
       "min": 0,
       "max": 100
+    },
+    { "name": "Match Review Needed?",
+      "code": "mrn",
+      "type": "bool"
     },
     { "name": "Comments",
       "code": "co",
