@@ -12,12 +12,11 @@ var config_data = `
       "maxSize": 5,
       "required": "true"
     },
-    { "name": "Your Team Number",
-      "code": "tn",
-      "type": "team number",
-      "size": 5,
-      "maxSize": 5,
-      "required": "true"
+     { "name": "Your Team #",
+      "code": "yt",
+      "type": "team",
+      "min": 1,
+      "max": 99999
     },
     
     { "name": "Event",
