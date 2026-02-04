@@ -12,6 +12,14 @@ var config_data = `
       "maxSize": 5,
       "required": "true"
     },
+    { "name": "Your Team Number",
+      "code": "tn",
+      "type": "team number",
+      "size": 5,
+      "maxSize": 5,
+      "required": "true"
+    },
+    
     { "name": "Event",
       "code": "e",
       "type": "event",
