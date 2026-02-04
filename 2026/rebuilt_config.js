@@ -99,14 +99,7 @@ var config_data = `
     }
   ],
   "teleop": [
-    { "name": "Shooting Locations",
-      "code": "tsl",
-      "type": "clickable_image",
-      "filename": "2026/half_field.png",
-      "dimensions": "7 10",
-      "allowableResponses": "1 2 3 4 8 9 10 11 15 16 17 18 22 23 24 25 29 30 31 32 36 37 38 39 43 44 45 46 50 51 52 53 57 58 59 60 64 65 66 67",
-      "shape": "circle 5 black red true"
-    },
+
     { "name": "Fuel Scored",
       "code": "tfs",
       "type": "counter"
@@ -221,7 +214,7 @@ var config_data = `
       "code": "pen",
       "type": "bool"
     },
-    { "name": "Fuel Percentage",
+    { "name": "What percentage of the total fuel for this alliance did this robot score?",
       "tooltip": "What percentage of the total fuel for this alliance did this robot score?",
       "code": "pct",
       "type": "number",
