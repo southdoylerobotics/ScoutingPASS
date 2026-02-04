@@ -4,7 +4,8 @@ var config_data = `
   "title": "Scouting PASS 2026",
   "page_title": "REBUILT",
   "checkboxAs": "10",
-  "prematch": [
+  
+ "prematch": [
     { "name": "Scouter Initials",
       "code": "s",
       "type": "scouter",
@@ -12,13 +13,12 @@ var config_data = `
       "maxSize": 5,
       "required": "true"
     },
-     { "name": "Your Team #",
+    { "name": "Your Team #",
       "code": "yt",
-      "type": "team",
+      "type": "number", 
       "min": 1,
-      "max": 99999
+      "max": 9999
     },
-    
     { "name": "Event",
       "code": "e",
       "type": "event",
