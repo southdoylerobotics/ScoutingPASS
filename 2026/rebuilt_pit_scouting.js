@@ -25,14 +25,6 @@ var config_data = `
       "defaultValue": "2026Pit",
       "required": "true"
     },
-    { "name": "Match #",
-      "code": "m",
-      "type": "match",
-      "min": 1,
-      "max": 1,
-      "defaultValue": "1",
-      "required": "true"
-    },
     { "name": "Chassis Width (in)",
       "code": "wid",
       "type": "number",
