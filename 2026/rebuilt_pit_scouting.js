@@ -1,47 +1,64 @@
 var config_data = `
 {
   "dataFormat": "tsv",
-  "title": "Scouting PASS 2026",
-  "page_title": "REBUILT",
-  "pitConfig": "true",
+  "title": "Pit Scouting 2026",
+  "page_title": "PIT SCOUTING",
+  "checkboxAs": "10",
   "prematch": [
-    {
-      "name": "Team Number",
-      "code": "t",
-      "type": "number"
+    { "name": "Scouter Name",
+      "code": "s",
+      "type": "scouter",
+      "size": 10,
+      "maxSize": 20,
+      "required": "true"
     },
-    {
-      "name": "Chassis Width",
+    { "name": "Team Number",
+      "code": "t",
+      "type": "number",
+      "min": 1,
+      "max": 9999,
+      "required": "true"
+    },
+    { "name": "Event",
+      "code": "e",
+      "type": "event",
+      "defaultValue": "2026Pit",
+      "required": "true"
+    },
+    { "name": "Match #",
+      "code": "m",
+      "type": "match",
+      "min": 1,
+      "max": 1,
+      "defaultValue": "1",
+      "required": "true"
+    },
+    { "name": "Chassis Width (in)",
       "code": "wid",
       "type": "number",
       "defaultValue": "0"
     },
-    {
-      "name": "Chassis Length",
+    { "name": "Chassis Length (in)",
       "code": "len",
       "type": "number",
       "defaultValue": "0"
     },
-    {
-      "name": "Weight",
+    { "name": "Weight (lbs)",
       "code": "wei",
       "type": "number",
       "defaultValue": "0"
     },
-    {
-      "name": "# of Batteries",
+    { "name": "# of Batteries",
       "code": "nob",
       "type": "number",
       "defaultValue": "0"
     },
-    {
-      "name": "Max Capacity of Fuel",
+    { "name": "Max Fuel Capacity",
       "code": "mcf",
       "type": "number",
       "defaultValue": "0"
     },
-    {
-      "name": "Comments",
+    { "name": "Comments",
       "code": "co",
       "type": "text",
       "size": 20,
@@ -52,6 +69,4 @@ var config_data = `
   "teleop": [],
   "endgame": [],
   "postmatch": []
-}
-
 }`;
