@@ -5,48 +5,53 @@ var config_data = `
   "page_title": "REBUILT",
   "pitConfig": "true",
   "prematch": [
-    { "name": "Team Number",
+    {
+      "name": "Team Number",
       "code": "t",
       "type": "number"
     },
-    { "name": "Chassis Width",
+    {
+      "name": "Chassis Width",
       "code": "wid",
       "type": "number",
       "defaultValue": "0"
     },
-    { "name": "Chassis Length",
+    {
+      "name": "Chassis Length",
       "code": "len",
       "type": "number",
       "defaultValue": "0"
     },
-    { "name": "Weight",
+    {
+      "name": "Weight",
       "code": "wei",
       "type": "number",
       "defaultValue": "0"
     },
-    { "name": "# of Batteries",
+    {
+      "name": "# of Batteries",
       "code": "nob",
       "type": "number",
       "defaultValue": "0"
     },
-    { "name": "Max Capacity of Fuel",
+    {
+      "name": "Max Capacity of Fuel",
       "code": "mcf",
       "type": "number",
       "defaultValue": "0"
     },
-    { "name": "Comments",
+    {
+      "name": "Comments",
       "code": "co",
       "type": "text",
       "size": 20,
       "maxSize": 250
-    },
+    }
   ],
-  "auton": [
-  ],
-  "teleop": [
-  ],
-  "endgame": [
-  ],
-  "postmatch": [
-  ]
+  "auton": [],
+  "teleop": [],
+  "endgame": [],
+  "postmatch": []
+}
+
 }`;
