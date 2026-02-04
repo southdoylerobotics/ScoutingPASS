@@ -31,7 +31,7 @@ var config_data = `
     },
     { "name": "Max Capacity of Fuel",
       "code": "mcf",
-      "type": "number"
+      "type": "number",
       "defaultValue": "0"
     },
     { "name": "Comments",
