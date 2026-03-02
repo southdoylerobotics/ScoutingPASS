@@ -1487,32 +1487,27 @@ window.onload = function () {
 var kanyeClicks = 0;
 var kanyeTimer;
 
-// Wait for the page to load before attaching the secret listener
+// Wait for the page to load
 document.addEventListener("DOMContentLoaded", function() {
-    
-    // Target the Pre-Match table specifically
-    var preMatchEl = document.getElementById("prematch_table");
-    
-    // Fallback to the body if for some reason the table hasn't rendered yet
-    if (!preMatchEl) {
-        preMatchEl = document.body; 
-    }
-    
-    preMatchEl.addEventListener("click", function() {
-        kanyeClicks++;
-        clearTimeout(kanyeTimer);
-        
-        // If they tap 5 times...
-        if (kanyeClicks >= 5) {
-            kanyeClicks = 0; // Reset the counter
-            showKanye();
+    // Attach it to the whole document, but only trigger if they click the top header
+    document.addEventListener("click", function(event) {
+        // Change "page_title" to whatever class your main header uses, 
+        // or just let it trigger anywhere on the page for testing by removing the if statement
+        if (event.target.className.includes("page_title") || event.target.tagName === "H1" || event.target.tagName === "H2") {
+            kanyeClicks++;
+            clearTimeout(kanyeTimer);
+            
+            if (kanyeClicks >= 5) {
+                kanyeClicks = 0; 
+                showKanye();
+            }
+            
+            kanyeTimer = setTimeout(function() {
+                kanyeClicks = 0;
+            }, 1500);
         }
-        
-        // If they don't tap fast enough (within 1.5 seconds), reset the counter
-        kanyeTimer = setTimeout(function() {
-            kanyeClicks = 0;
-        }, 1500);
     });
+});
 });
 
 function showKanye() {
@@ -1555,6 +1550,7 @@ function showKanye() {
 // END SECRET KANYE
 // ============================================================
 };
+
 
 
 
