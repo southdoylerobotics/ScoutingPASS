@@ -10,8 +10,7 @@ var config_data = `{
     { "name": "Match Level", "code": "l", "type": "level", "choices": { "qm": "Quals<br>", "sf": "Semifinals<br>", "f": "Finals" }, "defaultValue": "qm", "required": "true" },
     { "name": "Match #", "code": "m", "type": "match", "min": 1, "max": 150, "required": "true" },
     { "name": "Robot", "code": "r", "type": "robot", "choices": { "r1": "Red-1", "b1": "Blue-1<br>", "r2": "Red-2", "b2": "Blue-2<br>", "r3": "Red-3", "b3": "Blue-3" }, "required": "true" },
-    { "name": "Team #", "code": "t", "type": "team", "min": 1, "max": 99999 },
-    { "name": "Auto Start Location", "code": "as", "type": "clickable_image", "filename": "2026/half_field.png", "clickRestriction": "one", "dimensions": "7 10", "allowableResponses": "4 11 18 25 32 39 46 53 60 67", "shape": "circle 5 black red true" }
+    { "name": "Team #", "code": "t", "type": "team", "min": 1, "max": 99999 }
   ],
   "auton": [
     { "name": "Fuel Scored", "code": "afs", "type": "counter" },
