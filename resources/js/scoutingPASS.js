@@ -1508,7 +1508,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
-});
 
 function showKanye() {
     // Check if Kanye is already on screen so we don't spawn an army of him
@@ -1550,6 +1549,7 @@ function showKanye() {
 // END SECRET KANYE
 // ============================================================
 };
+
 
 
 
