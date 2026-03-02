@@ -194,14 +194,15 @@ function addCounter(table, idx, name, data) {
   button2.setAttribute("onclick", "counter(this.parentElement, 1)");
   button2.setAttribute("value", "+");
   cell2.appendChild(button2);
-// ============================================================
+
+  // ============================================================
   // START NEW CODE: Add +5, +10, and Hopper buttons for Fuel
   // ============================================================
-  
-  // We check if the name of the field contains the word "Fuel"
   if (name.includes("Fuel")) {
     
-    // Create +5 Button
+    var lineBreak = document.createElement("br");
+    cell2.appendChild(lineBreak);
+
     var button5 = document.createElement("input");
     button5.setAttribute("type", "button");
     button5.setAttribute("onclick", "counter(this.parentElement, 5)"); 
@@ -209,7 +210,6 @@ function addCounter(table, idx, name, data) {
     button5.setAttribute("style", "margin-left: 5px; background-color: #ddd;"); 
     cell2.appendChild(button5);
 
-    // Create +10 Button
     var button10 = document.createElement("input");
     button10.setAttribute("type", "button");
     button10.setAttribute("onclick", "counter(this.parentElement, 10)");
@@ -217,7 +217,6 @@ function addCounter(table, idx, name, data) {
     button10.setAttribute("style", "margin-left: 5px; background-color: #bbb;");
     cell2.appendChild(button10);
 
-// Create + 1/2 Hopper Button
     var btnHalf = document.createElement("input");
     btnHalf.setAttribute("type", "button");
     btnHalf.setAttribute("value", "+ 1/2 Hopper");
@@ -225,13 +224,11 @@ function addCounter(table, idx, name, data) {
     btnHalf.onclick = function() {
         var teamInput = document.getElementById("input_t");
         var teamStr = teamInput ? teamInput.value : "";
-        // Defaults to 0 if pit data isn't loaded yet or if the data is invalid
         var cap = (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) ? (parseInt(teamFuelCapacity[teamStr]) || 0) : 0; 
         counter(this.parentElement, Math.round(cap / 2));
     };
     cell2.appendChild(btnHalf);
 
-    // Create + Full Hopper Button
     var btnFull = document.createElement("input");
     btnFull.setAttribute("type", "button");
     btnFull.setAttribute("value", "+ Full Hopper");
@@ -239,24 +236,23 @@ function addCounter(table, idx, name, data) {
     btnFull.onclick = function() {
         var teamInput = document.getElementById("input_t");
         var teamStr = teamInput ? teamInput.value : "";
-        // Defaults to 0 if pit data isn't loaded yet or if the data is invalid
         var cap = (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) ? (parseInt(teamFuelCapacity[teamStr]) || 0) : 0; 
         counter(this.parentElement, cap);
-    };
-    cell2.appendChild(btnFull);
     };
     cell2.appendChild(btnFull);
   }
   // ============================================================
   // END NEW CODE
   // ============================================================
+
   if (data.hasOwnProperty('cycleTimer')) {
     if (data.cycleTimer != "") {
       inp = document.createElement('input');
       inp.setAttribute("hidden", "");
       inp.setAttribute("id", "cycleTimer_" + data.code);
       inp.setAttribute("value", data.cycleTimer);
-      cell.appendChild(inp);
+      // Fixed small bug from original code where 'cell' was used instead of 'cell2'
+      cell2.appendChild(inp); 
     }
   }
 
@@ -270,7 +266,6 @@ function addCounter(table, idx, name, data) {
 
   return idx + 1;
 }
-
 function addClickableImage(table, idx, name, data) {
   var row = table.insertRow(idx);
   var cell = row.insertCell(0);
@@ -1560,6 +1555,7 @@ function showKanye() {
 // END SECRET KANYE
 // ============================================================
 };
+
 
 
 
