@@ -1493,11 +1493,11 @@ document.addEventListener("DOMContentLoaded", function() {
     document.addEventListener("click", function(event) {
         // Change "page_title" to whatever class your main header uses, 
         // or just let it trigger anywhere on the page for testing by removing the if statement
-        if (event.target.className.includes("page_title") || event.target.tagName === "H1" || event.target.tagName === "H2") {
+        if (event.target.className.includes("pre-match") || event.target.tagName === "H1" || event.target.tagName === "H2") {
             kanyeClicks++;
             clearTimeout(kanyeTimer);
             
-            if (kanyeClicks >= 5) {
+            if (kanyeClicks >= 3) {
                 kanyeClicks = 0; 
                 showKanye();
             }
@@ -1549,6 +1549,7 @@ function showKanye() {
 // END SECRET KANYE
 // ============================================================
 };
+
 
 
 
