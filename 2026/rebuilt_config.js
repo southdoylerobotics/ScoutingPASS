@@ -72,7 +72,7 @@ var config_data = `
       "shape": "circle 5 black red true"
     }
   ],
-  "auto": [
+  "auton": [
     { "name": "Fuel Scored",
       "code": "afs",
       "type": "counter"
