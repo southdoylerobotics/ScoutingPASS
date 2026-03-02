@@ -1497,7 +1497,7 @@ document.addEventListener("DOMContentLoaded", function() {
             kanyeClicks++;
             clearTimeout(kanyeTimer);
             
-            if (kanyeClicks >= 3) {
+            if (kanyeClicks >= 1) {
                 kanyeClicks = 0; 
                 showKanye();
             }
@@ -1549,6 +1549,7 @@ function showKanye() {
 // END SECRET KANYE
 // ============================================================
 };
+
 
 
 
