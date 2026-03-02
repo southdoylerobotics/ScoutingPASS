@@ -217,7 +217,7 @@ function addCounter(table, idx, name, data) {
     button10.setAttribute("style", "margin-left: 5px; background-color: #bbb;");
     cell2.appendChild(button10);
 
-    // Create + 1/2 Hopper Button
+// Create + 1/2 Hopper Button
     var btnHalf = document.createElement("input");
     btnHalf.setAttribute("type", "button");
     btnHalf.setAttribute("value", "+ 1/2 Hopper");
@@ -225,8 +225,8 @@ function addCounter(table, idx, name, data) {
     btnHalf.onclick = function() {
         var teamInput = document.getElementById("input_t");
         var teamStr = teamInput ? teamInput.value : "";
-        // Defaults to 0 if pit data isn't loaded yet
-        var cap = (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) ? parseInt(teamFuelCapacity[teamStr]) : 0; 
+        // Defaults to 0 if pit data isn't loaded yet or if the data is invalid
+        var cap = (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) ? (parseInt(teamFuelCapacity[teamStr]) || 0) : 0; 
         counter(this.parentElement, Math.round(cap / 2));
     };
     cell2.appendChild(btnHalf);
@@ -239,9 +239,11 @@ function addCounter(table, idx, name, data) {
     btnFull.onclick = function() {
         var teamInput = document.getElementById("input_t");
         var teamStr = teamInput ? teamInput.value : "";
-        // Defaults to 0 if pit data isn't loaded yet
-        var cap = (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) ? parseInt(teamFuelCapacity[teamStr]) : 0; 
+        // Defaults to 0 if pit data isn't loaded yet or if the data is invalid
+        var cap = (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) ? (parseInt(teamFuelCapacity[teamStr]) || 0) : 0; 
         counter(this.parentElement, cap);
+    };
+    cell2.appendChild(btnFull);
     };
     cell2.appendChild(btnFull);
   }
@@ -1552,6 +1554,7 @@ function showKanye() {
 // END SECRET KANYE
 // ============================================================
 };
+
 
 
 
