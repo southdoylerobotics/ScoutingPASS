@@ -195,7 +195,7 @@ function addCounter(table, idx, name, data) {
   button2.setAttribute("value", "+");
   cell2.appendChild(button2);
 // ============================================================
-  // START NEW CODE: Add +5 and +10 buttons for Fuel
+  // START NEW CODE: Add +5, +10, and Hopper buttons for Fuel
   // ============================================================
   
   // We check if the name of the field contains the word "Fuel"
@@ -204,21 +204,46 @@ function addCounter(table, idx, name, data) {
     // Create +5 Button
     var button5 = document.createElement("input");
     button5.setAttribute("type", "button");
-    // We pass '5' to the counter function
     button5.setAttribute("onclick", "counter(this.parentElement, 5)"); 
     button5.setAttribute("value", "+5");
-    // Add a little styling to separate it
     button5.setAttribute("style", "margin-left: 5px; background-color: #ddd;"); 
     cell2.appendChild(button5);
 
     // Create +10 Button
     var button10 = document.createElement("input");
     button10.setAttribute("type", "button");
-    // We pass '10' to the counter function
     button10.setAttribute("onclick", "counter(this.parentElement, 10)");
     button10.setAttribute("value", "+10");
     button10.setAttribute("style", "margin-left: 5px; background-color: #bbb;");
     cell2.appendChild(button10);
+
+    // Create + 1/2 Hopper Button
+    var btnHalf = document.createElement("input");
+    btnHalf.setAttribute("type", "button");
+    btnHalf.setAttribute("value", "+ 1/2 Hopper");
+    btnHalf.setAttribute("style", "margin-left: 5px; background-color: #99c; color: white;");
+    btnHalf.onclick = function() {
+        var teamInput = document.getElementById("input_t");
+        var teamStr = teamInput ? teamInput.value : "";
+        // Defaults to 60 if pit data isn't loaded yet
+        var cap = (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) ? parseInt(teamFuelCapacity[teamStr]) : 60; 
+        counter(this.parentElement, Math.round(cap / 2));
+    };
+    cell2.appendChild(btnHalf);
+
+    // Create + Full Hopper Button
+    var btnFull = document.createElement("input");
+    btnFull.setAttribute("type", "button");
+    btnFull.setAttribute("value", "+ Full Hopper");
+    btnFull.setAttribute("style", "margin-left: 5px; background-color: #558; color: white;");
+    btnFull.onclick = function() {
+        var teamInput = document.getElementById("input_t");
+        var teamStr = teamInput ? teamInput.value : "";
+        // Defaults to 60 if pit data isn't loaded yet
+        var cap = (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) ? parseInt(teamFuelCapacity[teamStr]) : 60; 
+        counter(this.parentElement, cap);
+    };
+    cell2.appendChild(btnFull);
   }
   // ============================================================
   // END NEW CODE
@@ -1460,4 +1485,5 @@ window.onload = function () {
     }
   }
 };
+
 
