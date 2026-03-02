@@ -1481,74 +1481,8 @@ window.onload = function () {
       setUpGoogleSheets();
     }
   }
-// ============================================================
-// START SECRET KANYE EASTER EGG (PRE-MATCH TRIGGER)
-// ============================================================
-var kanyeClicks = 0;
-var kanyeTimer;
-
-// Wait for the page to load
-document.addEventListener("DOMContentLoaded", function() {
-    // Attach it to the whole document, but only trigger if they click the top header
-    document.addEventListener("click", function(event) {
-        // Change "page_title" to whatever class your main header uses, 
-        // or just let it trigger anywhere on the page for testing by removing the if statement
-        if (event.target.className.includes("pre-match") || event.target.tagName === "H1" || event.target.tagName === "H2") {
-            kanyeClicks++;
-            clearTimeout(kanyeTimer);
-            
-            if (kanyeClicks >= 1) {
-                kanyeClicks = 0; 
-                showKanye();
-            }
-            
-            kanyeTimer = setTimeout(function() {
-                kanyeClicks = 0;
-            }, 1500);
-        }
-    });
-});
-
-function showKanye() {
-    // Check if Kanye is already on screen so we don't spawn an army of him
-    if (document.getElementById("secretKanye")) return;
-
-    var kanyeImg = document.createElement("img");
-    kanyeImg.id = "secretKanye";
-    
-    // The glorious image source
-    kanyeImg.src = "https://upload.wikimedia.org/wikipedia/commons/0/0f/Kanye_West_at_the_2009_Tribeca_Film_Festival-2_%28cropped%29.jpg"; 
-    
-    // Styling to make him slide up from the bottom right smoothly
-    kanyeImg.style.position = "fixed";
-    kanyeImg.style.bottom = "-300px"; // Start hidden off-screen
-    kanyeImg.style.right = "20px";
-    kanyeImg.style.width = "200px";
-    kanyeImg.style.zIndex = "9999"; // Make sure he is on top of everything
-    kanyeImg.style.transition = "bottom 0.4s ease-out";
-    kanyeImg.style.borderRadius = "10px";
-    kanyeImg.style.boxShadow = "0px 0px 15px rgba(0,0,0,0.7)";
-    kanyeImg.style.pointerEvents = "none"; // So it doesn't interrupt scouter clicks
-
-    document.body.appendChild(kanyeImg);
-
-    // Trigger the slide up animation
-    setTimeout(function() {
-        kanyeImg.style.bottom = "0px";
-    }, 50);
-
-    // Slide back down and remove from the page after 3 seconds
-    setTimeout(function() {
-        kanyeImg.style.bottom = "-300px";
-        setTimeout(function() {
-            kanyeImg.remove();
-        }, 500); // Wait for the animation to finish before deleting
-    }, 3000);
-}
-// ============================================================
-// END SECRET KANYE
-// ============================================================
 };
+
 
 
 
