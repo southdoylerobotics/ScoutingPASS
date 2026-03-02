@@ -13,15 +13,15 @@ var config_data = `{
     { "name": "Team #", "code": "t", "type": "team", "min": 1, "max": 99999 }
   ],
   "auton": [
-    { "name": "Fuel Scored", "code": "afs", "type": "counter" },
+    { "name": "Fuel Scored", "code": "afs", "type": "counter", "hopperButtons": true },
     { "name": "Climb (L1)", "code": "ac", "type": "radio", "choices": { "c": "Climbed<br>", "a": "Attempted<br>", "x": "Not Attempted" }, "defaultValue": "x" },
     { "name": "Won Auto?", "code": "wau", "type": "bool" }
   ],
   "teleop": [
-    { "name": "Fuel Scored: Transition Shift", "code": "tsf", "type": "counter" },
-    { "name": "Fuel Scored: Shift 1", "code": "sof", "type": "counter" },
-    { "name": "Fuel Scored: Shift 2", "code": "stf", "type": "counter" },
-    { "name": "Fuel Scored: End Game", "code": "egf", "type": "counter" },
+    { "name": "Fuel Scored: Transition Shift", "code": "tsf", "type": "counter", "hopperButtons": true },
+    { "name": "Fuel Scored: Shift 1", "code": "sof", "type": "counter", "hopperButtons": true },
+    { "name": "Fuel Scored: Shift 2", "code": "stf", "type": "counter", "hopperButtons": true },
+    { "name": "Fuel Scored: End Game", "code": "egf", "type": "counter", "hopperButtons": true },
     { "name": "Pass from Neutral Zone", "code": "pnz", "type": "bool" },
     { "name": "Pass from Opp<br>Alliance Zone", "code": "poa", "type": "bool" }
   ],
