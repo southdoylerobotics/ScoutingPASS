@@ -9,16 +9,6 @@ var config_data = `
       "code": "t",
       "type": "number"
     },
-    { "name": "Length",
-      "code": "len",
-      "type": "number",
-      "defaultValue": "0"
-    },
-    { "name": "Width",
-      "code": "wid",
-      "type": "number",
-      "defaultValue": "0"
-    },
     { "name": "Weight",
       "code": "wei",
       "type": "number",
