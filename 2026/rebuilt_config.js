@@ -72,16 +72,12 @@ var config_data = `
       "shape": "circle 5 black red true"
     }
   ],
-  "auton": [
+  "auto": [
     { "name": "Fuel Scored",
       "code": "afs",
       "type": "counter"
     },
-    { "name": "Too Many Fuel to Count (>50)",
-      "code": "tm",
-      "type": "bool"
-    },
-    
+
     { "name": "Climb (L1)",
       "code": "ac",
       "type": "radio",
@@ -92,42 +88,30 @@ var config_data = `
       },
       "defaultValue": "x"
     },
-    { "name": "Pickup from Depot",
-      "code": "afd",
-      "type": "bool"
-    },
-    { "name": "Pickup from Outpost",
-      "code": "afo",
-      "type": "bool"
-    },
-    { "name": "Pickup from<br>Neutral Zone",
-      "code": "aff",
+    { "name": "Won Auto?",
+      "code": "wau",
       "type": "bool"
     }
   ],
   "teleop": [
 
-    { "name": "Fuel Scored",
-      "code": "tfs",
+    { "name": "Fuel Scored: Transition Shift",
+      "code": "tsf",
       "type": "counter"
     },
-    { "name": "Too Many Fuel to Count (>50)",
-      "code": "tmf",
-      "type": "bool"
+    { "name": "Fuel Scored: Shift 1",
+      "code": "sof",
+      "type": "counter"
     },
     
-    { "name": "Pickup from Depot",
-      "code": "tfd",
-      "type": "bool"
+    { "name": "Fuel Scored: Shift 2",
+      "code": "stf",
+      "type": "counter"
     },
-    { "name": "Pickup from Outpost",
-      "code": "tfo",
-      "type": "bool"
-    },
-    { "name": "Pickup from Floor",
-      "code": "tff",
-      "type": "bool"
-    },
+    { "name": "Fuel Scored: End Game",
+      "code": "egf",
+      "type": "counter"
+    },     
     { "name": "Pass from Neutral Zone",
       "code": "pnz",
       "type": "bool"
