@@ -1487,17 +1487,23 @@ window.onload = function () {
     }
   }
 // ============================================================
-// START SECRET KANYE EASTER EGG
+// START SECRET KANYE EASTER EGG (PRE-MATCH TRIGGER)
 // ============================================================
 var kanyeClicks = 0;
 var kanyeTimer;
 
 // Wait for the page to load before attaching the secret listener
 document.addEventListener("DOMContentLoaded", function() {
-    // We will attach the secret trigger to the main title of the page
-    var titleEl = document.querySelector(".page_title") || document.body;
     
-    titleEl.addEventListener("click", function() {
+    // Target the Pre-Match table specifically
+    var preMatchEl = document.getElementById("prematch_table");
+    
+    // Fallback to the body if for some reason the table hasn't rendered yet
+    if (!preMatchEl) {
+        preMatchEl = document.body; 
+    }
+    
+    preMatchEl.addEventListener("click", function() {
         kanyeClicks++;
         clearTimeout(kanyeTimer);
         
@@ -1521,7 +1527,7 @@ function showKanye() {
     var kanyeImg = document.createElement("img");
     kanyeImg.id = "secretKanye";
     
-    // You can swap this URL out with any Kanye meme image you want!
+    // The glorious image source
     kanyeImg.src = "https://upload.wikimedia.org/wikipedia/commons/0/0f/Kanye_West_at_the_2009_Tribeca_Film_Festival-2_%28cropped%29.jpg"; 
     
     // Styling to make him slide up from the bottom right smoothly
@@ -1554,6 +1560,7 @@ function showKanye() {
 // END SECRET KANYE
 // ============================================================
 };
+
 
 
 
