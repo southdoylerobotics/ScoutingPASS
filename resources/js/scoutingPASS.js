@@ -1484,6 +1484,74 @@ window.onload = function () {
       setUpGoogleSheets();
     }
   }
+// ============================================================
+// START SECRET KANYE EASTER EGG
+// ============================================================
+var kanyeClicks = 0;
+var kanyeTimer;
+
+// Wait for the page to load before attaching the secret listener
+document.addEventListener("DOMContentLoaded", function() {
+    // We will attach the secret trigger to the main title of the page
+    var titleEl = document.querySelector(".page_title") || document.body;
+    
+    titleEl.addEventListener("click", function() {
+        kanyeClicks++;
+        clearTimeout(kanyeTimer);
+        
+        // If they tap 5 times...
+        if (kanyeClicks >= 5) {
+            kanyeClicks = 0; // Reset the counter
+            showKanye();
+        }
+        
+        // If they don't tap fast enough (within 1.5 seconds), reset the counter
+        kanyeTimer = setTimeout(function() {
+            kanyeClicks = 0;
+        }, 1500);
+    });
+});
+
+function showKanye() {
+    // Check if Kanye is already on screen so we don't spawn an army of him
+    if (document.getElementById("secretKanye")) return;
+
+    var kanyeImg = document.createElement("img");
+    kanyeImg.id = "secretKanye";
+    
+    // You can swap this URL out with any Kanye meme image you want!
+    kanyeImg.src = "https://upload.wikimedia.org/wikipedia/commons/0/0f/Kanye_West_at_the_2009_Tribeca_Film_Festival-2_%28cropped%29.jpg"; 
+    
+    // Styling to make him slide up from the bottom right smoothly
+    kanyeImg.style.position = "fixed";
+    kanyeImg.style.bottom = "-300px"; // Start hidden off-screen
+    kanyeImg.style.right = "20px";
+    kanyeImg.style.width = "200px";
+    kanyeImg.style.zIndex = "9999"; // Make sure he is on top of everything
+    kanyeImg.style.transition = "bottom 0.4s ease-out";
+    kanyeImg.style.borderRadius = "10px";
+    kanyeImg.style.boxShadow = "0px 0px 15px rgba(0,0,0,0.7)";
+    kanyeImg.style.pointerEvents = "none"; // So it doesn't interrupt scouter clicks
+
+    document.body.appendChild(kanyeImg);
+
+    // Trigger the slide up animation
+    setTimeout(function() {
+        kanyeImg.style.bottom = "0px";
+    }, 50);
+
+    // Slide back down and remove from the page after 3 seconds
+    setTimeout(function() {
+        kanyeImg.style.bottom = "-300px";
+        setTimeout(function() {
+            kanyeImg.remove();
+        }, 500); // Wait for the animation to finish before deleting
+    }, 3000);
+}
+// ============================================================
+// END SECRET KANYE
+// ============================================================
 };
+
 
 
