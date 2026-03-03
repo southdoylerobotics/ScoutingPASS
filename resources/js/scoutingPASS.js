@@ -15,6 +15,29 @@ var pitScouting = false;
 var checkboxAs = 'YN';
 var ColWidth = '200px';
 
+function doGet(e) {
+  // We use your exact Spreadsheet ID so it never gets lost
+  var ss = SpreadsheetApp.openById("156bMWEt7CTnBGyNyhF1Mt2teyu8WFSB3_PKO9ot4vTE");
+  
+  // Grabs the very first tab/sheet at the bottom of your file
+  var sheet = ss.getSheets()[0]; 
+  var data = sheet.getDataRange().getValues();
+  
+  var capacities = {};
+  
+  for (var i = 1; i < data.length; i++) {
+    var teamStr = data[i][0].toString().trim();
+    var cap = parseInt(data[i][1]) || 0;
+    
+    if (teamStr !== "") {
+      capacities[teamStr] = cap;
+    }
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify(capacities))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
 // Options
 var options = {
   correctLevel: QRCode.CorrectLevel.L,
@@ -1481,29 +1504,8 @@ window.onload = function () {
       setUpGoogleSheets();
     }
   }
-function doGet(e) {
-  // We use your exact Spreadsheet ID so it never gets lost
-  var ss = SpreadsheetApp.openById("156bMWEt7CTnBGyNyhF1Mt2teyu8WFSB3_PKO9ot4vTE");
-  
-  // Grabs the very first tab/sheet at the bottom of your file
-  var sheet = ss.getSheets()[0]; 
-  var data = sheet.getDataRange().getValues();
-  
-  var capacities = {};
-  
-  for (var i = 1; i < data.length; i++) {
-    var teamStr = data[i][0].toString().trim();
-    var cap = parseInt(data[i][1]) || 0;
-    
-    if (teamStr !== "") {
-      capacities[teamStr] = cap;
-    }
-  }
-  
-  return ContentService.createTextOutput(JSON.stringify(capacities))
-    .setMimeType(ContentService.MimeType.JSON);
-}
 };
+
 
 
 
