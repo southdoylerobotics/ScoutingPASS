@@ -1481,27 +1481,30 @@ window.onload = function () {
       setUpGoogleSheets();
     }
   }
-// ============================================================
-// LIVE PIT SCOUTING DATA CONNECTION
-// ============================================================
-var teamFuelCapacity = {}; // Start empty
-
-// Paste the Web App URL you copied from Google Apps Script below:
-var sheetApiUrl = "https://script.google.com/macros/s/AKfycbxrYZTrxecyma8_o3BPHwPXRHRWSWLK_1wzRfthfe90HCozSVOdLAuBpMvOQ-cRSQQU/exec";
-
-// Fetch the data from Google Sheets when the app loads
-document.addEventListener("DOMContentLoaded", function() {
-    fetch(sheetApiUrl)
-        .then(response => response.json())
-        .then(data => {
-            teamFuelCapacity = data;
-            console.log("Successfully loaded live pit data!", teamFuelCapacity);
-        })
-        .catch(error => {
-            console.error("Error loading pit data. Falling back to zeroes.", error);
-        });
-});
+function doGet(e) {
+  // We use your exact Spreadsheet ID so it never gets lost
+  var ss = SpreadsheetApp.openById("156bMWEt7CTnBGyNyhF1Mt2teyu8WFSB3_PKO9ot4vTE");
+  
+  // Grabs the very first tab/sheet at the bottom of your file
+  var sheet = ss.getSheets()[0]; 
+  var data = sheet.getDataRange().getValues();
+  
+  var capacities = {};
+  
+  for (var i = 1; i < data.length; i++) {
+    var teamStr = data[i][0].toString().trim();
+    var cap = parseInt(data[i][1]) || 0;
+    
+    if (teamStr !== "") {
+      capacities[teamStr] = cap;
+    }
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify(capacities))
+    .setMimeType(ContentService.MimeType.JSON);
+}
 };
+
 
 
 
