@@ -596,6 +596,10 @@ function addNumber(table, idx, name, data) {
     (data.type == 'match')) {
     inp.setAttribute("onchange", "updateMatchStart(event)");
   }
+	// NEW CODE: Trigger capacity update as the team is typed
+  if (data.type == 'team') {
+    inp.addEventListener("input", updateCapacityDisplay);
+  }
   if (data.hasOwnProperty('min')) {
     inp.setAttribute("min", data.min);
   }
@@ -857,18 +861,43 @@ function configure() {
 	buildRequiredElementList(element);
   });
 
-  // Configure auton screen
+// Configure auton screen
   var ac = mydata.auton;
   var at = document.getElementById("auton_table");
-  idx = 0;
+  var idx = 0;
+
+  // NEW CODE: Add Capacity Display to Auto
+  var autoRow = at.insertRow(idx++);
+  var autoCell = autoRow.insertCell(0);
+  autoCell.colSpan = 2;
+  autoCell.style.textAlign = "center";
+  autoCell.style.fontWeight = "bold";
+  autoCell.style.color = "#4CAF50"; 
+  autoCell.id = "auto_capacity_display";
+  autoCell.innerHTML = "Team Fuel Capacity: --";
+
+  // KEEP THIS: This builds the rest of the buttons
   ac.forEach(element => {
     idx = addElement(at, idx, element);
   });
 
   // Configure teleop screen
+ // Configure teleop screen
   var tc = mydata.teleop;
   var tt = document.getElementById("teleop_table");
-  idx = 0;
+  var idx = 0;
+
+  // NEW CODE: Add Capacity Display to Teleop
+  var teleopRow = tt.insertRow(idx++);
+  var teleopCell = teleopRow.insertCell(0);
+  teleopCell.colSpan = 2;
+  teleopCell.style.textAlign = "center";
+  teleopCell.style.fontWeight = "bold";
+  teleopCell.style.color = "#4CAF50"; 
+  teleopCell.id = "teleop_capacity_display";
+  teleopCell.innerHTML = "Team Fuel Capacity: --";
+
+  // KEEP THIS: This builds the rest of the buttons
   tc.forEach(element => {
     idx = addElement(tt, idx, element);
   });
@@ -1544,6 +1573,25 @@ window.onload = function () {
       setUpGoogleSheets();
     }
   }
+}
+// ==========================================
+// NEW CODE: Update Fuel Capacity Display
+// ==========================================
+function updateCapacityDisplay() {
+  var teamInput = document.getElementById("input_t");
+  if (!teamInput) return; // Failsafe in case it hasn't loaded
+  
+  var teamStr = teamInput.value;
+  var cap = (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) ? teamFuelCapacity[teamStr] : "Unknown";
+  
+  var displayStr = "Team " + teamStr + " Fuel Capacity: " + cap;
+  if (teamStr === "") displayStr = "Team Fuel Capacity: --";
+
+  var autoDisplay = document.getElementById("auto_capacity_display");
+  if (autoDisplay) autoDisplay.innerHTML = displayStr;
+  
+  var teleopDisplay = document.getElementById("teleop_capacity_display");
+  if (teleopDisplay) teleopDisplay.innerHTML = displayStr;
 };
 
 
