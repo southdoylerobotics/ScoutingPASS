@@ -594,13 +594,12 @@ function addNumber(table, idx, name, data) {
   }
 if ((data.type == 'team') ||
     (data.type == 'match')) {
-    // We add updateCapacityDisplay() right into the existing onchange event
     inp.setAttribute("onchange", "updateMatchStart(event); updateCapacityDisplay();");
   }
   
-  // NEW CODE: Also trigger it as the user types (key by key)
+  // NEW CODE: Force update instantly as they type
   if (data.type == 'team') {
-    inp.setAttribute("onkeyup", "updateCapacityDisplay()");
+    inp.setAttribute("oninput", "updateCapacityDisplay()");
   }
   if (data.hasOwnProperty('min')) {
     inp.setAttribute("min", data.min);
@@ -874,7 +873,7 @@ function configure() {
   autoCell.colSpan = 2;
   autoCell.style.textAlign = "center";
   autoCell.style.fontWeight = "bold";
-  autoCell.style.color = "#4CAF50"; 
+  autoCell.style.color = "black"; 
   autoCell.id = "auto_capacity_display";
   autoCell.innerHTML = "Team Fuel Capacity: --";
 
@@ -895,7 +894,7 @@ function configure() {
   teleopCell.colSpan = 2;
   teleopCell.style.textAlign = "center";
   teleopCell.style.fontWeight = "bold";
-  teleopCell.style.color = "#4CAF50"; 
+  teleopCell.style.color = "black"; 
   teleopCell.id = "teleop_capacity_display";
   teleopCell.innerHTML = "Team Fuel Capacity: --";
 
@@ -923,6 +922,8 @@ function configure() {
   if (!enableGoogleSheets) {
     document.getElementById("submit").style.display = "none";
   }
+
+updateCapacityDisplay();
 
   return 0
 }
