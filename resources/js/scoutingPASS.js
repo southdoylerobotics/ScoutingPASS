@@ -594,14 +594,14 @@ function addNumber(table, idx, name, data) {
   }
 if ((data.type == 'team') ||
     (data.type == 'match')) {
-    inp.setAttribute("onchange", "updateMatchStart(event)");
+    // We add our function to the onchange event here
+    inp.setAttribute("onchange", "updateMatchStart(event); updateCapacityDisplay();");
   }
   
-  // NEW CODE: Directly pass the typed value to the function
+  // NEW CODE: Force the trigger using setAttribute
   if (data.type == 'team') {
-    inp.addEventListener("input", function(e) {
-      updateCapacityDisplay(e.target.value);
-    });
+    inp.setAttribute("oninput", "updateCapacityDisplay()");
+    inp.setAttribute("onkeyup", "updateCapacityDisplay()");
   }
   if (data.hasOwnProperty('min')) {
     inp.setAttribute("min", data.min);
@@ -1585,14 +1585,14 @@ window.onload = function () {
 // ==========================================
 // NEW CODE: Update Fuel Capacity Display (Bulletproof)
 // ==========================================
-function updateCapacityDisplay(teamStr) {
-  // If no value is passed (like on page load), try to find the input box manually
-  if (typeof teamStr === 'undefined' || typeof teamStr === 'object') {
-    var teamInput = document.getElementById("input_t") || document.getElementById("input_team");
-    teamStr = teamInput ? teamInput.value : "";
-  }
+// ==========================================
+// NEW CODE: Update Fuel Capacity Display (Simplified)
+// ==========================================
+function updateCapacityDisplay() {
+  var teamInput = document.getElementById("input_t");
+  if (!teamInput) return; 
   
-  teamStr = teamStr.toString().trim();
+  var teamStr = teamInput.value.toString().trim();
   var cap = (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) ? teamFuelCapacity[teamStr] : "Unknown";
   
   var displayStr = "Team " + teamStr + " Fuel Capacity: " + cap;
@@ -1601,15 +1601,16 @@ function updateCapacityDisplay(teamStr) {
   var autoDisplay = document.getElementById("auto_capacity_display");
   if (autoDisplay) {
     autoDisplay.innerHTML = displayStr;
-    autoDisplay.style.color = "black"; // Forces the color to black here!
+    autoDisplay.style.color = "black";
   }
   
   var teleopDisplay = document.getElementById("teleop_capacity_display");
   if (teleopDisplay) {
     teleopDisplay.innerHTML = displayStr;
-    teleopDisplay.style.color = "black"; // Forces the color to black here!
+    teleopDisplay.style.color = "black";
   }
 }
+
 
 
 
