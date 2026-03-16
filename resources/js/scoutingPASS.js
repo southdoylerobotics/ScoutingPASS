@@ -594,12 +594,14 @@ function addNumber(table, idx, name, data) {
   }
 if ((data.type == 'team') ||
     (data.type == 'match')) {
-    inp.setAttribute("onchange", "updateMatchStart(event); updateCapacityDisplay();");
+    inp.setAttribute("onchange", "updateMatchStart(event)");
   }
   
-  // NEW CODE: Force update instantly as they type
+  // NEW CODE: Directly pass the typed value to the function
   if (data.type == 'team') {
-    inp.setAttribute("oninput", "updateCapacityDisplay()");
+    inp.addEventListener("input", function(e) {
+      updateCapacityDisplay(e.target.value);
+    });
   }
   if (data.hasOwnProperty('min')) {
     inp.setAttribute("min", data.min);
