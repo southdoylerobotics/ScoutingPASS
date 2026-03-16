@@ -594,14 +594,17 @@ function addNumber(table, idx, name, data) {
   }
 if ((data.type == 'team') ||
     (data.type == 'match')) {
-    // We add our function to the onchange event here
-    inp.setAttribute("onchange", "updateMatchStart(event); updateCapacityDisplay();");
+    inp.setAttribute("onchange", "updateMatchStart(event)");
   }
   
-  // NEW CODE: Force the trigger using setAttribute
+  // NEW CODE: Direct property binding (Bypasses setAttribute quirks)
   if (data.type == 'team') {
-    inp.setAttribute("oninput", "updateCapacityDisplay()");
-    inp.setAttribute("onkeyup", "updateCapacityDisplay()");
+    inp.oninput = updateCapacityDisplay;
+    inp.onkeyup = updateCapacityDisplay;
+    inp.onchange = function(e) {
+      updateMatchStart(e);
+      updateCapacityDisplay();
+    };
   }
   if (data.hasOwnProperty('min')) {
     inp.setAttribute("min", data.min);
@@ -1588,26 +1591,45 @@ window.onload = function () {
 // ==========================================
 // NEW CODE: Update Fuel Capacity Display (Simplified)
 // ==========================================
+// ==========================================
+// NEW CODE: Update Fuel Capacity Display (Diagnostic Version)
+// ==========================================
 function updateCapacityDisplay() {
+  console.log("1. updateCapacityDisplay function triggered!"); 
+  
   var teamInput = document.getElementById("input_t");
-  if (!teamInput) return; 
+  if (!teamInput) {
+    console.error("2. ERROR: Could not find the team input box (id 'input_t').");
+    return; 
+  }
   
   var teamStr = teamInput.value.toString().trim();
-  var cap = (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) ? teamFuelCapacity[teamStr] : "Unknown";
+  console.log("2. Found team input. Scouter typed: '" + teamStr + "'");
+  
+  var cap = "Unknown";
+  if (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) {
+    cap = teamFuelCapacity[teamStr];
+  }
+  console.log("3. Calculated capacity for this team: " + cap);
   
   var displayStr = "Team " + teamStr + " Fuel Capacity: " + cap;
   if (teamStr === "") displayStr = "Team Fuel Capacity: --";
 
   var autoDisplay = document.getElementById("auto_capacity_display");
+  var teleopDisplay = document.getElementById("teleop_capacity_display");
+  
   if (autoDisplay) {
     autoDisplay.innerHTML = displayStr;
-    autoDisplay.style.color = "black";
+    console.log("4. Successfully updated Auto HTML!");
+  } else {
+    console.error("4. ERROR: Could not find auto_capacity_display in the HTML.");
   }
   
-  var teleopDisplay = document.getElementById("teleop_capacity_display");
   if (teleopDisplay) {
     teleopDisplay.innerHTML = displayStr;
-    teleopDisplay.style.color = "black";
+    console.log("5. Successfully updated Teleop HTML!");
+  } else {
+    console.error("5. ERROR: Could not find teleop_capacity_display in the HTML.");
   }
 }
 
