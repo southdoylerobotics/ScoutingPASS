@@ -1580,24 +1580,34 @@ window.onload = function () {
 // ==========================================
 // NEW CODE: Update Fuel Capacity Display
 // ==========================================
-function updateCapacityDisplay() {
-  var teamInput = document.getElementById("input_t");
-  if (!teamInput) return; // Failsafe in case it hasn't loaded
+// ==========================================
+// NEW CODE: Update Fuel Capacity Display (Bulletproof)
+// ==========================================
+function updateCapacityDisplay(teamStr) {
+  // If no value is passed (like on page load), try to find the input box manually
+  if (typeof teamStr === 'undefined' || typeof teamStr === 'object') {
+    var teamInput = document.getElementById("input_t") || document.getElementById("input_team");
+    teamStr = teamInput ? teamInput.value : "";
+  }
   
-  var teamStr = teamInput.value;
+  teamStr = teamStr.toString().trim();
   var cap = (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) ? teamFuelCapacity[teamStr] : "Unknown";
   
   var displayStr = "Team " + teamStr + " Fuel Capacity: " + cap;
   if (teamStr === "") displayStr = "Team Fuel Capacity: --";
 
   var autoDisplay = document.getElementById("auto_capacity_display");
-  if (autoDisplay) autoDisplay.innerHTML = displayStr;
+  if (autoDisplay) {
+    autoDisplay.innerHTML = displayStr;
+    autoDisplay.style.color = "black"; // Forces the color to black here!
+  }
   
   var teleopDisplay = document.getElementById("teleop_capacity_display");
-  if (teleopDisplay) teleopDisplay.innerHTML = displayStr;
-};
-
-
+  if (teleopDisplay) {
+    teleopDisplay.innerHTML = displayStr;
+    teleopDisplay.style.color = "black"; // Forces the color to black here!
+  }
+}
 
 
 
