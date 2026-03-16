@@ -592,13 +592,15 @@ function addNumber(table, idx, name, data) {
   } else {
     inp.setAttribute("name", data.code);
   }
-  if ((data.type == 'team') ||
+if ((data.type == 'team') ||
     (data.type == 'match')) {
-    inp.setAttribute("onchange", "updateMatchStart(event)");
+    // We add updateCapacityDisplay() right into the existing onchange event
+    inp.setAttribute("onchange", "updateMatchStart(event); updateCapacityDisplay();");
   }
-	// NEW CODE: Trigger capacity update as the team is typed
+  
+  // NEW CODE: Also trigger it as the user types (key by key)
   if (data.type == 'team') {
-    inp.addEventListener("input", updateCapacityDisplay);
+    inp.setAttribute("onkeyup", "updateCapacityDisplay()");
   }
   if (data.hasOwnProperty('min')) {
     inp.setAttribute("min", data.min);
