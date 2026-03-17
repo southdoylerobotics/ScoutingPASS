@@ -1405,6 +1405,7 @@ function updateMatchStart(event) {
       onTeamnameChange();
     }
   }
+updateCapacityDisplay();
 }
 
 function onTeamnameChange(event) {
