@@ -18,9 +18,7 @@ var config_data = `{
     { "name": "Won Auto?", "code": "wau", "type": "bool" }
   ],
   "teleop": [
-    { "name": "Fuel Scored: Transition Shift", "code": "tsf", "type": "counter", "hopperButtons": true },
-    { "name": "Fuel Scored: Shift 1", "code": "sof", "type": "counter", "hopperButtons": true },
-    { "name": "Fuel Scored: Shift 2", "code": "stf", "type": "counter", "hopperButtons": true },
+    { "name": "Fuel Scored", "code": "tsf", "type": "counter", "hopperButtons": true },
     { "name": "Fuel Scored: End Game", "code": "egf", "type": "counter", "hopperButtons": true },
     { "name": "Pass from Neutral Zone", "code": "pnz", "type": "bool" },
     { "name": "Pass from Opp<br>Alliance Zone", "code": "poa", "type": "bool" }
