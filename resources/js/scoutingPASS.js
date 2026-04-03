@@ -875,12 +875,14 @@ function configure() {
 	buildRequiredElementList(element);
   });
 
-// Configure auton screen
+// ==========================================
+  // Configure QUANTITATIVE screen (Auton + Teleop + Endgame)
+  // ==========================================
   var ac = mydata.auton;
   var at = document.getElementById("auton_table");
   var idx = 0;
 
-  // NEW CODE: Add Capacity Display to Auto
+  // Capacity Display at the very top of the page
   var autoRow = at.insertRow(idx++);
   var autoCell = autoRow.insertCell(0);
   autoCell.colSpan = 2;
@@ -890,38 +892,29 @@ function configure() {
   autoCell.id = "auto_capacity_display";
   autoCell.innerHTML = "Team Fuel Capacity: --";
 
-  // KEEP THIS: This builds the rest of the buttons
+  // 1. Build Auton Buttons
   ac.forEach(element => {
     idx = addElement(at, idx, element);
   });
 
-  // Configure teleop screen
- // Configure teleop screen
+  // 2. Add visual separator for Teleop Phase
+  var teleopHeader = {"name": "--- TELEOP PHASE ---", "type": "label"};
+  idx = addElement(at, idx, teleopHeader);
+
+  // 3. Build Teleop Buttons (onto the auton table)
   var tc = mydata.teleop;
-  var tt = document.getElementById("teleop_table");
-  var idx = 0;
-
-  // NEW CODE: Add Capacity Display to Teleop
-  var teleopRow = tt.insertRow(idx++);
-  var teleopCell = teleopRow.insertCell(0);
-  teleopCell.colSpan = 2;
-  teleopCell.style.textAlign = "center";
-  teleopCell.style.fontWeight = "bold";
-  teleopCell.style.color = "black"; 
-  teleopCell.id = "teleop_capacity_display";
-  teleopCell.innerHTML = "Team Fuel Capacity: --";
-
-  // KEEP THIS: This builds the rest of the buttons
   tc.forEach(element => {
-    idx = addElement(tt, idx, element);
+    idx = addElement(at, idx, element);
   });
 
-  // Configure endgame screen
+  // 4. Add visual separator for Endgame Phase
+  var endgameHeader = {"name": "--- ENDGAME ---", "type": "label"};
+  idx = addElement(at, idx, endgameHeader);
+
+  // 5. Build Endgame Buttons (onto the auton table)
   var egc = mydata.endgame;
-  var egt = document.getElementById("endgame_table");
-  idx = 0;
   egc.forEach(element => {
-    idx = addElement(egt, idx, element);
+    idx = addElement(at, idx, element);
   });
 
   // Configure postmatch screen
@@ -1604,41 +1597,18 @@ window.onload = function () {
 // NEW CODE: Update Fuel Capacity Display (Diagnostic Version)
 // ==========================================
 function updateCapacityDisplay() {
-  console.log("1. updateCapacityDisplay function triggered!"); 
-  
   var teamInput = document.getElementById("input_t");
-  if (!teamInput) {
-    console.error("2. ERROR: Could not find the team input box (id 'input_t').");
-    return; 
-  }
+  if (!teamInput) return; 
   
   var teamStr = teamInput.value.toString().trim();
-  console.log("2. Found team input. Scouter typed: '" + teamStr + "'");
-  
-  var cap = "Unknown";
-  if (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) {
-    cap = teamFuelCapacity[teamStr];
-  }
-  console.log("3. Calculated capacity for this team: " + cap);
+  var cap = (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) ? teamFuelCapacity[teamStr] : "Unknown";
   
   var displayStr = "Team " + teamStr + " Fuel Capacity: " + cap;
   if (teamStr === "") displayStr = "Team Fuel Capacity: --";
 
   var autoDisplay = document.getElementById("auto_capacity_display");
-  var teleopDisplay = document.getElementById("teleop_capacity_display");
-  
   if (autoDisplay) {
     autoDisplay.innerHTML = displayStr;
-    console.log("4. Successfully updated Auto HTML!");
-  } else {
-    console.error("4. ERROR: Could not find auto_capacity_display in the HTML.");
-  }
-  
-  if (teleopDisplay) {
-    teleopDisplay.innerHTML = displayStr;
-    console.log("5. Successfully updated Teleop HTML!");
-  } else {
-    console.error("5. ERROR: Could not find teleop_capacity_display in the HTML.");
   }
 }
 
