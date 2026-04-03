@@ -1635,6 +1635,45 @@ function updateCapacityDisplay() {
     autoDisplay.innerHTML = displayStr;
   }
 }
+// ==========================================
+// OVERRIDE: Bulletproof Clear Form Function
+// ==========================================
+function clearForm() {
+  if (confirm("Are you sure you want to clear the form?")) {
+    // 1. Wipe the data from the form
+    document.getElementById("scoutingForm").reset();
+
+    // 2. Clear the QR Code visual so it doesn't try to validate empty data
+    var qrCodeDiv = document.getElementById("qrcode");
+    if (qrCodeDiv) qrCodeDiv.innerHTML = "";
+    var dataDiv = document.getElementById("data");
+    if (dataDiv) dataDiv.innerHTML = "";
+
+    // 3. Reset the "Robot" radio buttons cleanly
+    if (typeof resetRobot === "function") {
+      resetRobot();
+    }
+
+    // 4. Send the scouter safely back to the very first page
+    var panels = document.getElementsByClassName("main-panel");
+    for (var i = 0; i < panels.length; i++) {
+      panels[i].style.display = "none";
+    }
+    if (panels.length > 0) {
+      panels[0].style.display = "block";
+    }
+    
+    // 5. Reset the internal page counter back to 0
+    if (typeof slide !== "undefined") {
+      slide = 0;
+    }
+
+    // 6. Reset your custom capacity text
+    if (typeof updateCapacityDisplay === "function") {
+      updateCapacityDisplay();
+    }
+  }
+}
 
 
 
