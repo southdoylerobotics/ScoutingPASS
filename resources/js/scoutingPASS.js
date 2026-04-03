@@ -882,6 +882,13 @@ function configure() {
   var at = document.getElementById("auton_table");
   var idx = 0;
 
+// ==========================================
+  // Configure QUANTITATIVE screen (Auton + Teleop + Endgame)
+  // ==========================================
+  var ac = mydata.auton;
+  var at = document.getElementById("auton_table");
+  var idx = 0;
+
   // Capacity Display at the very top of the page
   var autoRow = at.insertRow(idx++);
   var autoCell = autoRow.insertCell(0);
@@ -892,29 +899,46 @@ function configure() {
   autoCell.id = "auto_capacity_display";
   autoCell.innerHTML = "Team Fuel Capacity: --";
 
+  // --- ADD AUTON HEADER & LINE ---
+  var autonHeadRow = at.insertRow(idx++);
+  var autonHeadCell = autonHeadRow.insertCell(0);
+  autonHeadCell.colSpan = 2;
+  autonHeadCell.innerHTML = "<br><hr><h2 style='margin: 5px 0;'>AUTON PHASE</h2><hr>";
+  autonHeadCell.style.textAlign = "center";
+
   // 1. Build Auton Buttons
   ac.forEach(element => {
     idx = addElement(at, idx, element);
   });
 
-  // 2. Add visual separator for Teleop Phase
-  var teleopHeader = {"name": "--- TELEOP PHASE ---", "type": "label"};
-  idx = addElement(at, idx, teleopHeader);
+  // --- ADD TELEOP HEADER & LINE ---
+  var teleopHeadRow = at.insertRow(idx++);
+  var teleopHeadCell = teleopHeadRow.insertCell(0);
+  teleopHeadCell.colSpan = 2;
+  teleopHeadCell.innerHTML = "<br><hr><h2 style='margin: 5px 0;'>TELEOP PHASE</h2><hr>";
+  teleopHeadCell.style.textAlign = "center";
 
-  // 3. Build Teleop Buttons (onto the auton table)
+  // 3. Build Teleop Buttons
   var tc = mydata.teleop;
   tc.forEach(element => {
     idx = addElement(at, idx, element);
   });
 
-  // 4. Add visual separator for Endgame Phase
-  var endgameHeader = {"name": "--- ENDGAME ---", "type": "label"};
-  idx = addElement(at, idx, endgameHeader);
+  // --- ADD ENDGAME HEADER & LINE ---
+  var endgameHeadRow = at.insertRow(idx++);
+  var endgameHeadCell = endgameHeadRow.insertCell(0);
+  endgameHeadCell.colSpan = 2;
+  endgameHeadCell.innerHTML = "<br><hr><h2 style='margin: 5px 0;'>ENDGAME PHASE</h2><hr>";
+  endgameHeadCell.style.textAlign = "center";
 
-  // 5. Build Endgame Buttons (onto the auton table)
+  // 5. Build Endgame Buttons (And hide the Fuel counter!)
   var egc = mydata.endgame;
   egc.forEach(element => {
-    idx = addElement(at, idx, element);
+    // This if-statement checks the name of the button. 
+    // If it contains the word "Fuel" (case-insensitive), it skips building it!
+    if (!element.name.toLowerCase().includes("fuel")) {
+      idx = addElement(at, idx, element);
+    }
   });
 
   // Configure postmatch screen
