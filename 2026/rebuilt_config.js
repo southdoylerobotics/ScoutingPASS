@@ -5,7 +5,7 @@ var config_data = `{
   "checkboxAs": "10",
   "prematch": [
     { "name": "First Name", "code": "s", "type": "scouter", "size": 5, "maxSize": 5, "required": "true" },
-    { "name": "Your Team #", "code": "yt", "type": "number", "choices": {"ca": "2393", "so":"6517"},
+    { "name": "Your Team #", "code": "yt", "type": "number", "choices": {"ca": "2393", "so":"6517"}},
     { "name": "Event", "code": "e", "type": "event", "defaultValue": "2026tnkn", "required": "true" },
     { "name": "Match Level", "code": "l", "type": "level", "choices": { "qm": "Quals<br>", "sf": "Semifinals<br>", "f": "Finals" }, "defaultValue": "qm", "required": "true" },
     { "name": "Match #", "code": "m", "type": "match", "min": 1, "max": 150, "required": "true" },
