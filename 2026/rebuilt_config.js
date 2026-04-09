@@ -6,7 +6,7 @@ var config_data = `{
   "prematch": [
     { "name": "First Name", "code": "s", "type": "scouter", "size": 5, "maxSize": 5, "required": "true" },
     { "name": "Your Team #", "code": "yt", "type": "radio", "choices": { "2393": "2393", "6517": "6517" }, "defaultValue": "ca", "required": "true" },
-    { "name": "Event", "code": "e", "type": "event", "defaultValue": "2026lake", "required": "true" },
+    { "name": "Event", "code": "e", "type": "event", "defaultValue": "2026alhu", "required": "true" },
     { "name": "Match Level", "code": "l", "type": "level", "choices": { "qm": "Quals<br>", "sf": "Semifinals<br>", "f": "Finals" }, "defaultValue": "qm", "required": "true" },
     { "name": "Match #", "code": "m", "type": "match", "min": 1, "max": 150, "required": "true" },
     { "name": "Robot", "code": "r", "type": "robot", "choices": { "r1": "Red-1", "b1": "Blue-1<br>", "r2": "Red-2", "b2": "Blue-2<br>", "r3": "Red-3", "b3": "Blue-3" }, "required": "true" },
