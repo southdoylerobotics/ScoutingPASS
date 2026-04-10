@@ -1498,20 +1498,25 @@ function copyData(){
 }
 
 window.onload = function () {
-  let ret = configure();
+  let ret = configure(); // This loads your config and the 'options' variable
+  
   if (ret != -1) {
+    // 1. Initialize the QR code here, now that the HTML is ready
+    var qrElement = document.getElementById("qrcode");
+    if (qrElement) {
+       qr = new QRCode(qrElement, options);
+    }
+
+    // 2. Handle your TBA integration
     let ece = document.getElementById("input_e");
-    let ec = null;
-    if (ece != null) {
-      ec = ece.value;
+    if (ece && ece.value != "") {
+      getTeams(ece.value);
+      getSchedule(ece.value);
     }
-    if (ec != null) {
-      getTeams(ec);
-      getSchedule(ec);
-    }
+
     this.drawFields();
-    if (enableGoogleSheets) {
-      console.log("Enabling Google Sheets.");
+    
+    if (typeof enableGoogleSheets !== 'undefined' && enableGoogleSheets) {
       setUpGoogleSheets();
     }
   }
