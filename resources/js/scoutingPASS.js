@@ -39,24 +39,24 @@ var teamFuelCapacity = {
   "4013": 45,
   "4020": 40,
   "4065": 48,
-  "4265": 0,
-  "4504": 0,
+  "4265": 20,
+  "4504": 20,
   "4576": 40,
-  "4630": 0,
+  "4630": 20,
   "4674": 40,
   "5276": 0,
   "5492": 30,
   "5744": 12,
   "6302": 28,
-  "6517": 0,
+  "6517": 85,
   "6774": 20,
   "7111": 35,
   "7428": 20,
   "7516": 9,
   "7525": 60,
   "7917": 35,
-  "8778": 0,
-  "9097": 0,
+  "8778": 10,
+  "9097": 40,
   "9152": 30,
   "9668": 40,
   "10137": 8,
@@ -812,57 +812,19 @@ function buildRequiredElementList(element) {
 }
 
 function configure() {
-    if (typeof config_data === 'string') {
-        config = JSON.parse(config_data);
-    } else {
-        config = config_data;
-    }
-
-    dataFormat = config.dataFormat;
-    pitScouting = config.title.toLowerCase().includes("pit");
-    slide = 0;
-
-    const sections = ['prematch', 'auton', 'teleop', 'endgame', 'postmatch'];
-    
-    sections.forEach(section => {
-        let table = document.getElementById(section + "_table");
-        if (!table) return;
-        
-        config[section].forEach(item => {
-            let row = table.insertRow(-1);
-            let cell1 = row.insertCell(0);
-            let cell2 = row.insertCell(1);
-            
-            cell1.innerHTML = `<label>${item.name}</label>`;
-            
-            // Handle ALL types from your config
-            if (['text', 'number', 'scouter', 'team', 'match', 'event'].includes(item.type)) {
-                let val = item.defaultValue ? item.defaultValue : "";
-                cell2.innerHTML = `<input type="${item.type === 'number' ? 'number' : 'text'}" id="input_${item.code}" value="${val}" class="${item.type}">`;
-            
-            } else if (item.type === 'bool') {
-                cell2.innerHTML = `<input type="checkbox" id="input_${item.code}">`;
-            
-            } else if (['radio', 'robot', 'level'].includes(item.type)) {
-                let options = "";
-                for (let key in item.choices) {
-                    let checked = (key === item.defaultValue) ? "checked" : "";
-                    options += `<input type="radio" name="input_${item.code}" id="input_${item.code}_${key}" value="${key}" ${checked}> ${item.choices[key]} `;
-                }
-                cell2.innerHTML = options;
-            
-            } else if (item.type === 'counter') {
-                cell2.innerHTML = `
-                    <div class="counter-container">
-                        <button type="button" class="btn-down" onclick="let inp=this.parentNode.querySelector('input'); if(inp.value > 0) inp.value--;">-</button>
-                        <input type="number" id="input_${item.code}" class="counter" value="0" readonly>
-                        <button type="button" class="btn-up" onclick="this.parentNode.querySelector('input').value++;">+</button>
-                    </div>`;
-            }
-        });
-    });
-    return 1;
-}
+  try {
+    var mydata = JSON.parse(config_data);
+  } catch (err) {
+    console.log(`Error parsing configuration file`)
+    console.log(err.message)
+    console.log('Use a tool like http://jsonlint.com/ to help you debug your config file')
+    var table = document.getElementById("prematch_table")
+    var row = table.insertRow(0);
+    var cell1 = row.insertCell(0);
+	cell1.style.width = ColWidth;
+    cell1.innerHTML = `Error parsing configuration file: ${err.message}<br><br>Use a tool like <a href="http://jsonlint.com/">http://jsonlint.com/</a> to help you debug your config file`
+    return -1
+  }
 
   if(mydata.hasOwnProperty('dataFormat')) {
     dataFormat = mydata.dataFormat;
@@ -1070,25 +1032,40 @@ function getData(dataFormat) {
 }
 
 function updateQRHeader() {
-  // The ?.value syntax prevents the "Cannot read properties of null" error
-  let eventVal = document.getElementById("input_e")?.value || "???";
-  let matchVal = document.getElementById("input_m")?.value || "???";
-  let teamVal  = document.getElementById("input_t")?.value || "???";
-  
-  // Look for the selected radio button for robot
-  let robotEl = document.querySelector('input[name="input_r"]:checked');
-  let robotVal = robotEl ? robotEl.value : "???";
+  let str = 'Event: !EVENT! Match: !MATCH! Robot: !ROBOT! Team: !TEAM!';
 
-  let str = `Event: ${eventVal} Match: ${matchVal} Robot: ${robotVal} Team: ${teamVal}`;
-
-  if (typeof pitScouting !== 'undefined' && pitScouting) {
-    str = `Pit Scouting - Team ${teamVal}`;
+  if (!pitScouting) {
+    str = str
+      .replace('!EVENT!', document.getElementById("input_e").value)
+      .replace('!MATCH!', document.getElementById("input_m").value)
+      .replace('!ROBOT!', document.getElementById("display_r").value)
+      .replace('!TEAM!', document.getElementById("input_t").value);
+  } else {
+    str = 'Pit Scouting - Team !TEAM!'
+      .replace('!TEAM!', document.getElementById("input_t").value);
   }
 
-  let displayEl = document.getElementById("display_qr-info");
-  if (displayEl) {
-    displayEl.textContent = str;
+  document.getElementById("display_qr-info").textContent = str;
+}
+
+
+function qr_regenerate() {
+  // Validate required pre-match date (event, match, level, robot, scouter)
+  if (!pitScouting) {  
+    if (validateData() == false) {
+      // Don't allow a swipe until all required data is filled in
+      return false
+    }
   }
+
+  // Get data
+  data = getData(dataFormat)
+
+  // Regenerate QR Code
+  qr.makeCode(data)
+
+  updateQRHeader()
+  return true
 }
 
 function qr_clear() {
@@ -1664,75 +1641,3 @@ function updateCapacityDisplay() {
     console.error("5. ERROR: Could not find teleop_capacity_display in the HTML.");
   }
 }
-
-function configure() {
-    // 1. Convert the string data into a usable Javascript Object
-    if (typeof config_data === 'string') {
-        config = JSON.parse(config_data);
-    } else {
-        config = config_data;
-    }
-
-    // 2. Set global variables the script expects
-    dataFormat = config.dataFormat;
-    pitScouting = config.title.toLowerCase().includes("pit");
-    slide = 0;
-
-    // 3. The Build Engine: This creates the HTML rows for every section
-    const sections = ['prematch', 'auton', 'teleop', 'endgame', 'postmatch'];
-    
-    sections.forEach(section => {
-        let table = document.getElementById(section + "_table");
-        if (!table) return;
-        
-        config[section].forEach(item => {
-            let row = table.insertRow(-1);
-            let cell1 = row.insertCell(0);
-            let cell2 = row.insertCell(1);
-            
-            cell1.innerHTML = `<label>${item.name}</label>`;
-            
-            // Basic input generation logic
-            if (item.type === 'text' || item.type === 'number' || item.type === 'scouter' || item.type === 'team' || item.type === 'match') {
-                cell2.innerHTML = `<input type="${item.type === 'number' ? 'number' : 'text'}" id="input_${item.code}" class="${item.type}">`;
-            } else if (item.type === 'bool') {
-                cell2.innerHTML = `<input type="checkbox" id="input_${item.code}">`;
-            } else if (item.type === 'radio' || item.type === 'robot' || item.type === 'level') {
-                let options = "";
-                for (let key in item.choices) {
-                    options += `<input type="radio" name="input_${item.code}" id="input_${item.code}_${key}" value="${key}"> ${item.choices[key]} `;
-                }
-                cell2.innerHTML = options;
-            } else if (item.type === 'counter') {
-                cell2.innerHTML = `
-                    <div class="counter-container">
-                        <button type="button" onclick="this.parentNode.querySelector('input').value--;">-</button>
-                        <input type="number" id="input_${item.code}" class="counter" value="0" readonly>
-                        <button type="button" onclick="this.parentNode.querySelector('input').value++;">+</button>
-                    </div>`;
-            }
-        });
-    });
-    return 1;
-}
-
-// Add a dummy validateData function so the Next button works
-function validateData() {
-    return true; 
-}
-
-// Add a dummy getData function to prevent QR errors
-function getData(format) {
-    return "ScoutingData2026";
-}
-
-
-
-
-
-
-
-
-
-
-
