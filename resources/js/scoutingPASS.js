@@ -1032,33 +1032,52 @@ function getData(dataFormat) {
 }
 
 function updateQRHeader() {
-    let str = 'Event: !EVENT! Match: !MATCH! Robot: !ROBOT! Team: !TEAM!';
+  // 1. Define the template
+  let str = 'Event: !EVENT! Match: !MATCH! Robot: !ROBOT! Team: !TEAM!';
 
-    // Helper function to safely get value or return "???" if missing
-    const safeGetValue = (id) => {
-        const el = document.getElementById(id);
-        return el ? el.value : "???";
-    };
-
-    if (!pitScouting) {
-        // We use the ID format expected by your config (input_e, input_m, etc.)
-        str = str
-            .replace('!EVENT!', safeGetValue("input_e"))
-            .replace('!MATCH!', safeGetValue("input_m"))
-            .replace('!ROBOT!', safeGetValue("display_r")) // Note: this might need to be input_r
-            .replace('!TEAM!', safeGetValue("input_t"));
-    } else {
-        str = 'Pit Scouting - Team !TEAM!'
-            .replace('!TEAM!', safeGetValue("input_t"));
+  // 2. Helper function to safely fetch values without crashing
+  const getSafeValue = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      return el.value || "???";
     }
+    return "???";
+  };
 
-    const displayEl = document.getElementById("display_qr-info");
-    if (displayEl) {
-        displayEl.textContent = str;
+  // 3. Special handling for the Robot field 
+  // (In your config, this is a radio button group named "input_r")
+  const getRobotValue = () => {
+    const checkedRadio = document.querySelector('input[name="input_r"]:checked');
+    if (checkedRadio) {
+      return checkedRadio.value;
     }
+    // Check if there's a fallback display element
+    const displayR = document.getElementById("display_r");
+    if (displayR) return displayR.value;
+    
+    return "???";
+  };
+
+  // 4. Build the string based on the scouting mode
+  if (typeof pitScouting !== 'undefined' && !pitScouting) {
+    str = str
+      .replace('!EVENT!', getSafeValue("input_e"))
+      .replace('!MATCH!', getSafeValue("input_m"))
+      .replace('!ROBOT!', getRobotValue())
+      .replace('!TEAM!', getSafeValue("input_t"));
+  } else {
+    str = 'Pit Scouting - Team !TEAM!'
+      .replace('!TEAM!', getSafeValue("input_t"));
+  }
+
+  // 5. Safely update the HTML span
+  const qrInfoDisplay = document.getElementById("display_qr-info");
+  if (qrInfoDisplay) {
+    qrInfoDisplay.textContent = str;
+  } else {
+    console.warn("Could not find 'display_qr-info' element to update header.");
+  }
 }
-
-
 function qr_regenerate() {
   // Validate required pre-match date (event, match, level, robot, scouter)
   if (!pitScouting) {  
