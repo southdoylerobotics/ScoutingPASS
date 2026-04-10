@@ -1642,7 +1642,66 @@ function updateCapacityDisplay() {
   }
 }
 
+function configure() {
+    // 1. Convert the string data into a usable Javascript Object
+    if (typeof config_data === 'string') {
+        config = JSON.parse(config_data);
+    } else {
+        config = config_data;
+    }
 
+    // 2. Set global variables the script expects
+    dataFormat = config.dataFormat;
+    pitScouting = config.title.toLowerCase().includes("pit");
+    slide = 0;
+
+    // 3. The Build Engine: This creates the HTML rows for every section
+    const sections = ['prematch', 'auton', 'teleop', 'endgame', 'postmatch'];
+    
+    sections.forEach(section => {
+        let table = document.getElementById(section + "_table");
+        if (!table) return;
+        
+        config[section].forEach(item => {
+            let row = table.insertRow(-1);
+            let cell1 = row.insertCell(0);
+            let cell2 = row.insertCell(1);
+            
+            cell1.innerHTML = `<label>${item.name}</label>`;
+            
+            // Basic input generation logic
+            if (item.type === 'text' || item.type === 'number' || item.type === 'scouter' || item.type === 'team' || item.type === 'match') {
+                cell2.innerHTML = `<input type="${item.type === 'number' ? 'number' : 'text'}" id="input_${item.code}" class="${item.type}">`;
+            } else if (item.type === 'bool') {
+                cell2.innerHTML = `<input type="checkbox" id="input_${item.code}">`;
+            } else if (item.type === 'radio' || item.type === 'robot' || item.type === 'level') {
+                let options = "";
+                for (let key in item.choices) {
+                    options += `<input type="radio" name="input_${item.code}" id="input_${item.code}_${key}" value="${key}"> ${item.choices[key]} `;
+                }
+                cell2.innerHTML = options;
+            } else if (item.type === 'counter') {
+                cell2.innerHTML = `
+                    <div class="counter-container">
+                        <button type="button" onclick="this.parentNode.querySelector('input').value--;">-</button>
+                        <input type="number" id="input_${item.code}" class="counter" value="0" readonly>
+                        <button type="button" onclick="this.parentNode.querySelector('input').value++;">+</button>
+                    </div>`;
+            }
+        });
+    });
+    return 1;
+}
+
+// Add a dummy validateData function so the Next button works
+function validateData() {
+    return true; 
+}
+
+// Add a dummy getData function to prevent QR errors
+function getData(format) {
+    return "ScoutingData2026";
+}
 
 
 
