@@ -4,9 +4,9 @@ var config_data = `{
   "page_title": "REBUILT",
   "checkboxAs": "10",
   "prematch": [
-    { "name": "First Name", "code": "s", "type": "scouter", "size": 5, "maxSize": 5, "required": "true" },
-    { "name": "Your Team #", "code": "yt", "type": "radio", "choices": { "2393": "2393", "6517": "6517" }, "defaultValue": "ca", "required": "true" },
-    { "name": "Event", "code": "e", "type": "event", "defaultValue": "2026alhu", "required": "true" },
+    { "name": "Scouter Initials", "code": "s", "type": "scouter", "size": 5, "maxSize": 5, "required": "true" },
+    { "name": "Your Team #", "code": "yt", "type": "number", "min": 1, "max": 9999 },
+    { "name": "Event", "code": "e", "type": "event", "defaultValue": "2026tnkn", "required": "true" },
     { "name": "Match Level", "code": "l", "type": "level", "choices": { "qm": "Quals<br>", "sf": "Semifinals<br>", "f": "Finals" }, "defaultValue": "qm", "required": "true" },
     { "name": "Match #", "code": "m", "type": "match", "min": 1, "max": 150, "required": "true" },
     { "name": "Robot", "code": "r", "type": "robot", "choices": { "r1": "Red-1", "b1": "Blue-1<br>", "r2": "Red-2", "b2": "Blue-2<br>", "r3": "Red-3", "b3": "Blue-3" }, "required": "true" },
@@ -18,7 +18,10 @@ var config_data = `{
     { "name": "Won Auto?", "code": "wau", "type": "bool" }
   ],
   "teleop": [
-    { "name": "Fuel Scored", "code": "tsf", "type": "counter", "hopperButtons": true }
+    { "name": "Fuel Scored", "code": "tsf", "type": "counter", "hopperButtons": true },
+    { "name": "Fuel Scored: End Game", "code": "egf", "type": "counter", "hopperButtons": true },
+    { "name": "Pass from Neutral Zone", "code": "pnz", "type": "bool" },
+    { "name": "Pass from Opp<br>Alliance Zone", "code": "poa", "type": "bool" }
   ],
   "endgame": [
     { "name": "Climb", "code": "tc", "type": "radio", "choices": { "1": "Level 1<br>", "2": "Level 2<br>", "3": "Level 3<br>", "a": "Attempted<br>", "x": "Not Attempted" }, "defaultValue": "x" }
@@ -27,8 +30,6 @@ var config_data = `{
     { "name": "Citrus Ranking", "code": "cr", "type": "radio", "choices": { "1": "1 (best)<br>", "2": "2<br>", "3": "3<br>" }, "defaultValue": "3" },
     { "name": "Driver Skill", "code": "ds", "type": "radio", "choices": { "n": "Not Effective<br>", "a": "Average<br>", "v": "Very Effective<br>", "x": "Not Observed" }, "defaultValue": "x" },
     { "name": "Speed Rating", "code": "sr", "type": "radio", "choices": { "1": "1 (slow)<br>", "2": "2<br>", "3": "3<br>", "4": "4<br>", "5": "5 (fast)" }, "defaultValue": "3" },
-    { "name": "Pass from Neutral Zone", "code": "pnz", "type": "bool" },
-    { "name": "Pass from Opp<br>Alliance Zone", "code": "poa", "type": "bool" },
     { "name": "Crossed Bump", "code": "bmp", "type": "bool" },
     { "name": "Crossed Trench", "code": "tre", "type": "bool" },
     { "name": "Died/Immobilized", "code": "die", "type": "bool" },
