@@ -15,13 +15,13 @@ var checkboxAs = 'YN';
 var ColWidth = '200px';
 
 var teamFuelCapacity = {
-  "34": 50, "120": 8, "538": 52, "744": 20, "1308": 0, "1466": 25,
-  "1912": 40, "2393": 42, "2481": 40, "2556": 32, "2638": 30, "2783": 35,
-  "2973": 0, "3140": 30, "3201": 30, "3260": 50, "3492": 40, "3792": 0,
-  "3959": 40, "3966": 20, "3984": 45, "4020": 40, "4107": 48, "4150": 20,
-  "4265": 20, "4306": 40, "4504": 20, "5002": 40, "5045": 0, "5125": 30,
-  "5492": 12, "5740": 28, "5842": 85, "6107": 20, "6517": 35, "7111": 20,
-  "7428": 9, "7515": 60, "7525": 35, "7917": 10, "8624": 40, "8778": 30,
+  "34": 50, "120": 8, "538": 52, "744": 20, "1308": 0, "1466": 25, 
+  "1912": 40, "2393": 42, "2481": 40, "2556": 32, "2638": 30, "2783": 35, 
+  "2973": 0, "3140": 30, "3201": 30, "3260": 50, "3492": 40, "3792": 0, 
+  "3959": 40, "3966": 20, "3984": 45, "4020": 40, "4107": 48, "4150": 20, 
+  "4265": 20, "4306": 40, "4504": 20, "5002": 40, "5045": 0, "5125": 30, 
+  "5492": 12, "5740": 28, "5842": 85, "6107": 20, "6517": 35, "7111": 20, 
+  "7428": 9, "7515": 60, "7525": 35, "7917": 10, "8624": 40, "8778": 30, 
   "9067": 40, "9153": 8, "9401": 0, "10137": 8, "10961": 8, "11037": 8, "11173": 8
 };
 
@@ -243,7 +243,7 @@ function addNumber(table, idx, name, data) {
   inp.setAttribute("type", "number");
   inp.setAttribute("value", data.defaultValue || "");
   if (data.type == 'team') {
-    inp.oninput = updateCapacityDisplay;
+    inp.oninput = onTeamnameChange;
   }
   cell2.appendChild(inp);
 
@@ -270,6 +270,9 @@ function addRadio(table, idx, name, data) {
       inp.setAttribute("type", "radio");
       inp.setAttribute("name", data.code);
       inp.setAttribute("value", c);
+      if (data.type == 'robot') {
+          inp.setAttribute("id", "input_r" + c);
+      }
       cell2.appendChild(inp);
       cell2.innerHTML += data.choices[c] + " ";
     });
@@ -353,42 +356,69 @@ function getData(dataFormat) {
 
   UniqueFieldNames.forEach((fieldname) => {
     var thisField = Form[fieldname];
-    var val = "";
+    var thisFieldValue = "";
     if (thisField.type == 'checkbox') {
-      val = thisField.checked ? checkedChar : uncheckedChar;
+      thisFieldValue = thisField.checked ? checkedChar : uncheckedChar;
     } else {
-      val = thisField.value ? thisField.value.toString().replace(/"/g, '').replace(/;/g, "-") : "";
+      thisFieldValue = thisField.value ? thisField.value.toString().replace(/"/g, '').replace(/;/g, "-") : "";
     }
-    fd.append(fieldname, val);
+    fd.append(fieldname, thisFieldValue);
   });
 
   if (dataFormat == "kvs") {
-    Array.from(fd.keys()).forEach(k => str.push(k + "=" + fd.get(k)));
+    Array.from(fd.keys()).forEach(thisKey => {
+      str.push(thisKey + "=" + fd.get(thisKey));
+    });
     return str.join(";");
-  } else {
-    Array.from(fd.keys()).forEach(k => str.push(fd.get(k)));
+  } else if (dataFormat == "tsv") {
+    Array.from(fd.keys()).forEach(thisKey => {
+      str.push(fd.get(thisKey));
+    });
     return str.join("\t");
+  } else {
+    return "unsupported dataFormat";
   }
 }
 
 function updateQRHeader() {
-  var e = document.getElementById("input_e").value;
-  var m = document.getElementById("input_m").value;
-  var t = document.getElementById("input_t").value;
-  document.getElementById("display_qr-info").textContent = "Event: " + e + " Match: " + m + " Team: " + t;
+  let str = 'Event: !EVENT! Match: !MATCH! Robot: !ROBOT! Team: !TEAM!';
+  if (!pitScouting) {
+    str = str
+      .replace('!EVENT!', document.getElementById("input_e").value)
+      .replace('!MATCH!', document.getElementById("input_m").value)
+      .replace('!ROBOT!', document.getElementById("display_r").value)
+      .replace('!TEAM!', document.getElementById("input_t").value);
+  } else {
+    str = 'Pit Scouting - Team !TEAM!'
+      .replace('!TEAM!', document.getElementById("input_t").value);
+  }
+  document.getElementById("display_qr-info").textContent = str;
 }
 
 function qr_regenerate() {
   try {
-    var data = getData(dataFormat);
-    if (qr) qr.makeCode(data);
-    updateQRHeader();
+    if (!pitScouting) {
+        if (typeof validateData === 'function' && validateData() == false) { return false; }
+    }
+  } catch(e) {}
+
+  var data = "";
+  try { data = getData(dataFormat); } catch(e) { data = "ERROR"; }
+
+  try {
+    if (typeof qr === 'undefined' || qr === null) {
+      var qrElement = document.getElementById("qrcode");
+      if (qrElement) { qr = new QRCode(qrElement, options); }
+    }
+    if (qr && typeof qr.makeCode === 'function') { qr.makeCode(data); }
   } catch (e) { console.error(e); }
+
+  try { updateQRHeader(); } catch (e) {}
   return true;
 }
 
 function swipePage(increment) {
-  if (qr_regenerate()) {
+  if (qr_regenerate() === true) {
     var slides = document.getElementById("main-panel-holder").children;
     if (slide + increment < slides.length && slide + increment >= 0) {
       slides[slide].style.display = "none";
@@ -406,64 +436,81 @@ function updateCapacityDisplay() {
   if (disp) disp.innerHTML = "Team " + t + " Fuel Capacity: " + cap;
 }
 
+function onTeamnameChange(event) {
+  var newNumber = document.getElementById("input_t").value;
+  var teamLabel = document.getElementById("teamname-label");
+  updateCapacityDisplay();
+  if (typeof getTeamName === 'function') {
+      var name = getTeamName(newNumber);
+      if (newNumber != "") {
+        teamLabel.innerText = name != "" ? "You are scouting " + name : "That team isn't playing this match";
+      } else { teamLabel.innerText = ""; }
+  }
+}
+
 function clearForm() {
   if (confirm("Are you sure you want to clear the form?")) {
-    var mInp = document.getElementById("input_m");
-    var nextMatch = parseInt(mInp.value) + 1;
-    var eVal = document.getElementById("input_e").value;
-    var sVal = document.getElementById("input_s").value;
+    var matchInput = document.getElementById("input_m");
+    var nextMatch = parseInt(matchInput.value) + 1;
+    var eventVal = document.getElementById("input_e").value;
+    var scouterVal = document.getElementById("input_s").value;
 
     document.getElementById("scoutingForm").reset();
 
-    mInp.value = nextMatch;
-    document.getElementById("input_e").value = eVal;
-    document.getElementById("input_s").value = sVal;
-
-    slide = 0;
-    var panels = document.getElementById("main-panel-holder").children;
-    for (var i = 0; i < panels.length; i++) panels[i].style.display = "none";
-    panels[0].style.display = "table";
+    if (!isNaN(nextMatch)) matchInput.value = nextMatch;
+    document.getElementById("input_e").value = eventVal;
+    document.getElementById("input_s").value = scouterVal;
 
     if (qr) qr.clear();
+    document.getElementById("display_qr-info").textContent = "";
+    document.getElementById("data").innerHTML = "";
+
+    document.querySelectorAll("input[type='hidden']").forEach(inp => {
+      if (inp.value.startsWith("[")) inp.value = "[]";
+      if (inp.id.startsWith("status_")) inp.value = "stopped";
+    });
+
+    slide = 0;
+    var panels = document.getElementsByClassName("main-panel");
+    for (var i = 0; i < panels.length; i++) panels[i].style.display = "none";
+    if (panels[0]) panels[0].style.display = "table";
+
     updateCapacityDisplay();
     drawFields();
     window.scrollTo(0, 0);
   }
 }
 
-function timer(el) {
-  var base = el.querySelector(".timer, .cycle").id.substring(6);
-  var stat = document.getElementById("status_" + base);
-  var btn = document.getElementById("start_" + base);
-  if (stat.value == "stopped") {
-    stat.value = "started";
-    btn.value = "Stop";
-    var iv = setInterval(() => {
-      var inp = document.getElementById("input_" + base);
-      inp.value = (parseFloat(inp.value) + 0.1).toFixed(1);
+function timer(event) {
+  var tId = event.querySelector(".timer, .cycle").id.substring(6);
+  var timerStatus = document.getElementById("status_" + tId);
+  var startButton = document.getElementById("start_" + tId);
+  var intervalIdField = document.getElementById("intervalId_" + tId);
+  if (timerStatus.value == 'stopped') {
+    timerStatus.value = 'started';
+    startButton.value = "Stop";
+    var intId = setInterval(() => {
+        var inp = document.getElementById("input_" + tId);
+        inp.value = (parseFloat(inp.value) + 0.1).toFixed(1);
     }, 100);
-    document.getElementById("intervalId_" + base).value = iv;
+    intervalIdField.value = intId;
   } else {
-    stat.value = "stopped";
-    btn.value = "Start";
-    clearInterval(document.getElementById("intervalId_" + base).value);
+    timerStatus.value = 'stopped';
+    startButton.value = "Start";
+    clearInterval(intervalIdField.value);
+    intervalIdField.value = '';
   }
 }
 
-function counter(el, step) {
-  var inp = el.querySelector(".counter");
-  var res = (parseInt(inp.value) || 0) + step;
-  inp.value = res < 0 ? 0 : res;
+function resetTimer(event) {
+  var tId = event.querySelector(".timer, .cycle").id.substring(6);
+  document.getElementById("input_" + tId).value = 0;
 }
 
-function resetTimer(el) { el.querySelector(".timer, .cycle").value = 0; }
-
-function startTouch(e) { initialX = e.touches[0].screenX; }
-function moveTouch(e) {
-  if (initialX === null) return;
-  var diffX = initialX - e.changedTouches[0].screenX;
-  if (Math.abs(diffX/screen.width) > xThreshold) swipePage(diffX > 0 ? 1 : -1);
-  initialX = null;
+function counter(element, step) {
+  var ctr = element.getElementsByClassName("counter")[0];
+  var result = parseInt(ctr.value) + step;
+  ctr.value = result < 0 ? 0 : result;
 }
 
 function drawFields() {
@@ -472,13 +519,29 @@ function drawFields() {
     var code = f.id.substring(7);
     var img = document.getElementById("img_" + code);
     var ctx = f.getContext("2d");
-    f.width = img.width * 0.5; f.height = img.height * 0.5;
-    ctx.drawImage(img, 0, 0, f.width, f.height);
+    if (img.width > 0) {
+        f.width = img.width * 0.5;
+        f.height = img.height * 0.5;
+        ctx.drawImage(img, 0, 0, f.width, f.height);
+    }
   }
+}
+
+function startTouch(e) { initialX = e.touches[0].screenX; }
+function moveTouch(e) {
+  if (initialX === null) return;
+  var currentX = e.changedTouches[0].screenX;
+  var diffX = initialX - currentX;
+  if (Math.abs(diffX/screen.width) > xThreshold) swipePage(diffX > 0 ? 1 : -1);
+  initialX = null;
 }
 
 window.onload = function() {
   configure();
-  var qrel = document.getElementById("qrcode");
-  if (qrel) qr = new QRCode(qrel, options);
+  var qrElement = document.getElementById("qrcode");
+  if (qrElement) qr = new QRCode(qrElement, options);
+  if (typeof getTeams === 'function') {
+      let e = document.getElementById("input_e").value;
+      if (e) { getTeams(e); getSchedule(e); }
+  }
 };
