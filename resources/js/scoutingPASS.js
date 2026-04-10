@@ -1143,17 +1143,16 @@ function moveTouch(e) {
 };
 
 function swipePage(increment) {
-  if (qr_regenerate() == true) {
-    slides = document.getElementById("main-panel-holder").children
-    if (slide + increment < slides.length && slide + increment >= 0) {
-      slides[slide].style.display = "none";
-      slide += increment;
-      window.scrollTo(0, 0);
-      slides[slide].style.display = "table";
-      document.getElementById('data').innerHTML = "";
-      document.getElementById('copyButton').setAttribute('value','Copy Data');
+    // Try to regenerate. If it returns true (or we force it), move the slide.
+    if (qr_regenerate() === true) {
+        var slides = document.getElementById("main-panel-holder").children;
+        if (slide + increment < slides.length && slide + increment >= 0) {
+            slides[slide].style.display = "none";
+            slide += increment;
+            window.scrollTo(0, 0);
+            slides[slide].style.display = "table"; // PWNAGE uses table display
+        }
     }
-  }
 }
 
 function drawFields(name) {
