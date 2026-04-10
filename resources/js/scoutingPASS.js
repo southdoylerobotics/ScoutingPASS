@@ -1071,13 +1071,36 @@ function updateQRHeader() {
 
 
 function qr_regenerate() {
-  // Validate required pre-match date (event, match, level, robot, scouter)
   if (!pitScouting) {  
     if (validateData() == false) {
-      // Don't allow a swipe until all required data is filled in
-      return false
+      // If you want to FORCE the swipe during testing even if validation fails, 
+      // change 'return false' to 'return true'. 
+      // Otherwise, you MUST fill out Match, Scouter, and Robot to move.
+      return false; 
     }
   }
+
+  var data = getData(dataFormat);
+
+  // PWNAGE FIX: Ensure qr exists before calling makeCode
+  if (typeof qr !== 'undefined' && qr !== null) {
+      qr.makeCode(data);
+  }
+
+  updateQRHeader();
+  return true;
+}
+
+  var data = getData(dataFormat);
+
+  // PWNAGE FIX: Ensure qr exists before calling makeCode
+  if (typeof qr !== 'undefined' && qr !== null) {
+      qr.makeCode(data);
+  }
+
+  updateQRHeader();
+  return true;
+}
 
   // Get data
   data = getData(dataFormat)
@@ -1550,7 +1573,7 @@ function updateCapacityDisplay() {
 }
 function clearForm() {
     if (confirm("Are you sure you want to clear the form for the next match?")) {
-        // 1. Save the fields we want to keep or increment
+        // 1. Capture fields to preserve/increment before the reset
         var matchInput = document.getElementById("input_m");
         var eventInput = document.getElementById("input_e");
         var scouterInput = document.getElementById("input_s");
@@ -1559,54 +1582,69 @@ function clearForm() {
         var currentEvent = eventInput ? eventInput.value : "";
         var currentScouter = scouterInput ? scouterInput.value : "";
 
-        // 2. Wipe the form data
+        // 2. Perform the standard HTML form reset
         document.getElementById("scoutingForm").reset();
 
-        // 3. Restore and Increment
-        if (!isNaN(nextMatch)) matchInput.value = nextMatch;
-        if (eventInput) eventInput.value = currentEvent;
-        if (scouterInput) scouterInput.value = currentScouter;
+        // 3. Restore preserved values
+        if (!isNaN(nextMatch)) {
+            matchInput.value = nextMatch;
+        }
+        if (eventInput) {
+            eventInput.value = currentEvent;
+        }
+        if (scouterInput) {
+            scouterInput.value = currentScouter;
+        }
 
-        // 4. Safely clear the QR Code without breaking the library
-        if (typeof qr !== 'undefined') {
+        // 4. Safely clear the QR Code and data labels
+        if (typeof qr !== 'undefined' && qr !== null) {
             qr.clear(); 
         }
+        
         var qrInfo = document.getElementById("display_qr-info");
-        if (qrInfo) qrInfo.textContent = "";
+        if (qrInfo) {
+            qrInfo.textContent = "";
+        }
         
         var dataDiv = document.getElementById("data");
-        if (dataDiv) dataDiv.innerHTML = "";
+        if (dataDiv) {
+            dataDiv.innerHTML = "";
+        }
 
-        // 5. Reset hidden XY coordinates and timers
+        // 5. Reset specialized PWNAGE hidden fields (XY coordinates and Timers)
+        // This looks for any hidden input and resets brackets to empty arrays
         document.querySelectorAll("input[type='hidden']").forEach(inp => {
-            if (inp.value.startsWith("[")) inp.value = "[]";
-            if (inp.id.startsWith("status_")) inp.value = "stopped";
+            if (inp.value.startsWith("[")) {
+                inp.value = "[]";
+            }
+            if (inp.id.startsWith("status_")) {
+                inp.value = "stopped";
+            }
         });
 
-        // 6. Reset the "Robot" radio buttons
+        // 6. Reset the "Robot" radio buttons (using your existing helper function)
         resetRobot();
 
-        // 7. Manually force the UI back to the first page (Slide 0)
+        // 7. Reset Navigation: Hide all panels and show the first one
         var panels = document.getElementsByClassName("main-panel");
         for (var i = 0; i < panels.length; i++) {
             panels[i].style.display = "none";
         }
         if (panels.length > 0) {
-            panels[0].style.display = "table"; // ScoutingPASS uses 'table' for display
+            panels[0].style.display = "table"; 
         }
         
-        // 8. Sync the internal slide counter
+        // 8. Sync the internal slide counter back to the start
         slide = 0;
 
-        // 9. Refresh visuals
+        // 9. Refresh UI components
         updateCapacityDisplay();
-        drawFields();
+        drawFields(); // Redraws empty canvases
         window.scrollTo(0, 0);
+        
+        console.log("Form cleared. Switched to Match " + nextMatch);
     }
 }
-var qr = new QRCode(document.getElementById("qrcode"), options);
-
-
 
 
 
