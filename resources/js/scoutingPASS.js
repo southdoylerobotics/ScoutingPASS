@@ -1093,102 +1093,6 @@ function qr_clear() {
   qr.clear()
 }
 
-function clearForm() {
-  var match = 0;
-  var e = 0;
-
-  if (pitScouting) {
-    swipePage(-1);
-  } else {
-    swipePage(-5);
-
-    // Increment match
-    match = parseInt(document.getElementById("input_m").value)
-    if (match == NaN) {
-      document.getElementById("input_m").value = ""
-    } else {
-      document.getElementById("input_m").value = match + 1
-    }
-
-    // Robot
-    resetRobot()
-  }
-
-  // Clear XY coordinates
-  inputs = document.querySelectorAll("[id*='XY_']");
-  for (e of inputs) {
-    code = e.id.substring(3)
-    e.value = "[]"
-  }
-
-  inputs = document.querySelectorAll("[id*='input_']");
-  for (e of inputs) {
-    code = e.id.substring(6)
-
-    // Don't clear key fields
-    if (code == "m") continue
-    if (code.substring(0, 2) == "r_") continue
-    if (code.substring(0, 2) == "l_") continue
-    if (code == "e") continue
-    if (code == "s") continue
-
-    if (e.className == "clickableImage") {
-      e.value = "[]";
-      continue;
-    }
-
-    radio = code.indexOf("_")
-    if (radio > -1) {
-      var baseCode = code.substr(0, radio)
-      if (e.checked) {
-        e.checked = false
-        document.getElementById("display_" + baseCode).value = ""
-      }
-      var defaultValue = document.getElementById("default_" + baseCode).value
-      if (defaultValue != "") {
-        if (defaultValue == e.value) {
-          e.checked = true
-          document.getElementById("display_" + baseCode).value = defaultValue
-        }
-      }
-    } else {
-      if (e.type == "number" || e.type == "text" || e.type == "hidden") {
-        if ((e.className == "counter") ||
-          (e.className == "timer") ||
-          (e.className == "cycle")) {
-          e.value = 0
-          if (e.className == "timer" || e.className == "cycle") {
-            // Stop interval
-            timerStatus = document.getElementById("status_" + code);
-            startButton = document.getElementById("start_" + code);
-            intervalIdField = document.getElementById("intervalId_" + code);
-            var intervalId = intervalIdField.value;
-            timerStatus.value = 'stopped';
-            startButton.innerHTML = "Start";
-            if (intervalId != '') {
-              clearInterval(intervalId);
-            }
-            intervalIdField.value = '';
-            if (e.className == "cycle") {
-              document.getElementById("cycletime_" + code).value = "[]"
-              document.getElementById("display_" + code).value = ""
-            }
-          }
-        } else {
-          e.value = ""
-        }
-      } else if (e.type == "checkbox") {
-        if (e.checked == true) {
-          e.checked = false
-        }
-      } else {
-        console.log("unsupported input type")
-      }
-    }
-  }
-  drawFields()
-}
-
 function startTouch(e) {
   initialX = e.touches[0].screenX;
 };
@@ -1627,7 +1531,7 @@ window.onload = function () {
 function updateCapacityDisplay() {
   var teamInput = document.getElementById("input_t");
   if (!teamInput) return; 
-  
+   
   var teamStr = teamInput.value.toString().trim();
   var cap = (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) ? teamFuelCapacity[teamStr] : "Unknown";
   
@@ -1639,46 +1543,62 @@ function updateCapacityDisplay() {
     autoDisplay.innerHTML = displayStr;
   }
 }
-// ==========================================
-// OVERRIDE: Bulletproof Clear Form Function
-// ==========================================
 function clearForm() {
-  if (confirm("Are you sure you want to clear the form?")) {
-    // 1. Wipe the data from the form
-    document.getElementById("scoutingForm").reset();
+    if (confirm("Are you sure you want to clear the form for the next match?")) {
+        // 1. Save the fields we want to keep or increment
+        var matchInput = document.getElementById("input_m");
+        var eventInput = document.getElementById("input_e");
+        var scouterInput = document.getElementById("input_s");
+        
+        var nextMatch = parseInt(matchInput.value) + 1;
+        var currentEvent = eventInput ? eventInput.value : "";
+        var currentScouter = scouterInput ? scouterInput.value : "";
 
-    // 2. Clear the QR Code visual so it doesn't try to validate empty data
-    var qrCodeDiv = document.getElementById("qrcode");
-    if (qrCodeDiv) qrCodeDiv.innerHTML = "";
-    var dataDiv = document.getElementById("data");
-    if (dataDiv) dataDiv.innerHTML = "";
+        // 2. Wipe the form data
+        document.getElementById("scoutingForm").reset();
 
-    // 3. Reset the "Robot" radio buttons cleanly
-    if (typeof resetRobot === "function") {
-      resetRobot();
-    }
+        // 3. Restore and Increment
+        if (!isNaN(nextMatch)) matchInput.value = nextMatch;
+        if (eventInput) eventInput.value = currentEvent;
+        if (scouterInput) scouterInput.value = currentScouter;
 
-    // 4. Send the scouter safely back to the very first page
-    var panels = document.getElementsByClassName("main-panel");
-    for (var i = 0; i < panels.length; i++) {
-      panels[i].style.display = "none";
-    }
-    if (panels.length > 0) {
-      panels[0].style.display = "block";
-    }
-    
-    // 5. Reset the internal page counter back to 0
-    if (typeof slide !== "undefined") {
-      slide = 0;
-    }
+        // 4. Safely clear the QR Code without breaking the library
+        if (typeof qr !== 'undefined') {
+            qr.clear(); 
+        }
+        var qrInfo = document.getElementById("display_qr-info");
+        if (qrInfo) qrInfo.textContent = "";
+        
+        var dataDiv = document.getElementById("data");
+        if (dataDiv) dataDiv.innerHTML = "";
 
-    // 6. Reset your custom capacity text
-    if (typeof updateCapacityDisplay === "function") {
-      updateCapacityDisplay();
+        // 5. Reset hidden XY coordinates and timers
+        document.querySelectorAll("input[type='hidden']").forEach(inp => {
+            if (inp.value.startsWith("[")) inp.value = "[]";
+            if (inp.id.startsWith("status_")) inp.value = "stopped";
+        });
+
+        // 6. Reset the "Robot" radio buttons
+        resetRobot();
+
+        // 7. Manually force the UI back to the first page (Slide 0)
+        var panels = document.getElementsByClassName("main-panel");
+        for (var i = 0; i < panels.length; i++) {
+            panels[i].style.display = "none";
+        }
+        if (panels.length > 0) {
+            panels[0].style.display = "table"; // ScoutingPASS uses 'table' for display
+        }
+        
+        // 8. Sync the internal slide counter
+        slide = 0;
+
+        // 9. Refresh visuals
+        updateCapacityDisplay();
+        drawFields();
+        window.scrollTo(0, 0);
     }
-  }
 }
-
 
 
 
