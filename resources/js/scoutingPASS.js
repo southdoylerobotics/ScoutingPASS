@@ -1032,20 +1032,30 @@ function getData(dataFormat) {
 }
 
 function updateQRHeader() {
-  let str = 'Event: !EVENT! Match: !MATCH! Robot: !ROBOT! Team: !TEAM!';
+    let str = 'Event: !EVENT! Match: !MATCH! Robot: !ROBOT! Team: !TEAM!';
 
-  if (!pitScouting) {
-    str = str
-      .replace('!EVENT!', document.getElementById("input_e").value)
-      .replace('!MATCH!', document.getElementById("input_m").value)
-      .replace('!ROBOT!', document.getElementById("display_r").value)
-      .replace('!TEAM!', document.getElementById("input_t").value);
-  } else {
-    str = 'Pit Scouting - Team !TEAM!'
-      .replace('!TEAM!', document.getElementById("input_t").value);
-  }
+    // Helper function to safely get value or return "???" if missing
+    const safeGetValue = (id) => {
+        const el = document.getElementById(id);
+        return el ? el.value : "???";
+    };
 
-  document.getElementById("display_qr-info").textContent = str;
+    if (!pitScouting) {
+        // We use the ID format expected by your config (input_e, input_m, etc.)
+        str = str
+            .replace('!EVENT!', safeGetValue("input_e"))
+            .replace('!MATCH!', safeGetValue("input_m"))
+            .replace('!ROBOT!', safeGetValue("display_r")) // Note: this might need to be input_r
+            .replace('!TEAM!', safeGetValue("input_t"));
+    } else {
+        str = 'Pit Scouting - Team !TEAM!'
+            .replace('!TEAM!', safeGetValue("input_t"));
+    }
+
+    const displayEl = document.getElementById("display_qr-info");
+    if (displayEl) {
+        displayEl.textContent = str;
+    }
 }
 
 
