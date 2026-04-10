@@ -1646,40 +1646,54 @@ function updateCapacityDisplay() {
 // OVERRIDE: Bulletproof Clear Form Function
 // ==========================================
 function clearForm() {
-  if (confirm("Are you sure you want to clear the form?")) {
-    // 1. Wipe the data from the form
-    document.getElementById("scoutingForm").reset();
+    if (confirm("Are you sure you want to clear the form?")) {
+        // 1. Save the next match number before resetting the form
+        var matchInput = document.getElementById("input_m");
+        var nextMatch = parseInt(matchInput.value) + 1;
 
-    // 2. Clear the QR Code visual so it doesn't try to validate empty data
-    var qrCodeDiv = document.getElementById("qrcode");
-    if (qrCodeDiv) qrCodeDiv.innerHTML = "";
-    var dataDiv = document.getElementById("data");
-    if (dataDiv) dataDiv.innerHTML = "";
+        // 2. Wipe the data from the form
+        document.getElementById("scoutingForm").reset();
 
-    // 3. Reset the "Robot" radio buttons cleanly
-    if (typeof resetRobot === "function") {
-      resetRobot();
-    }
+        // 3. Restore Match, Event, and Scouter (don't make them re-type these!)
+        if (!isNaN(nextMatch)) {
+            matchInput.value = nextMatch;
+        }
+        // These IDs depend on your config, but usually 'e' is event and 's' is scouter
+        // document.getElementById("input_e").value = ... (preserved by .reset() if you set defaults)
 
-    // 4. Send the scouter safely back to the very first page
-    var panels = document.getElementsByClassName("main-panel");
-    for (var i = 0; i < panels.length; i++) {
-      panels[i].style.display = "none";
-    }
-    if (panels.length > 0) {
-      panels[0].style.display = "block";
-    }
-    
-    // 5. Reset the internal page counter back to 0
-    if (typeof slide !== "undefined") {
-      slide = 0;
-    }
+        // 4. Safely clear the QR Code without destroying the element
+        if (typeof qr !== 'undefined') {
+            qr.clear(); 
+        }
+        document.getElementById("display_qr-info").textContent = "";
 
-    // 6. Reset your custom capacity text
-    if (typeof updateCapacityDisplay === "function") {
-      updateCapacityDisplay();
+        // 5. Reset the "Robot" radio buttons
+        resetRobot();
+
+        // 6. Reset all internal "Hidden" values (XY coordinates, cycle timers)
+        document.querySelectorAll("input[type='hidden']").forEach(inp => {
+            if (inp.value.startsWith("[")) inp.value = "[]";
+            if (inp.id.startsWith("status_")) inp.value = "stopped";
+        });
+
+        // 7. MANUALLY jump to the first slide
+        // Don't use swipePage(-5) because it triggers validation rules
+        var panels = document.getElementsByClassName("main-panel");
+        for (var i = 0; i < panels.length; i++) {
+            panels[i].style.display = "none";
+        }
+        if (panels.length > 0) {
+            panels[0].style.display = "table"; 
+        }
+        
+        // 8. CRITICAL: Sync the internal slide variable to 0
+        slide = 0;
+
+        // 9. Refresh UI
+        updateCapacityDisplay();
+        drawFields();
+        window.scrollTo(0, 0);
     }
-  }
 }
 
 
