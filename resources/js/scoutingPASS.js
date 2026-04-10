@@ -65,10 +65,8 @@ var teamFuelCapacity = {
   "10961": 8,
   "11037": 8,
   "11173": 8,
-
-
-
 };
+
 function doGet(e) {
   // We use your exact Spreadsheet ID so it never gets lost
   var ss = SpreadsheetApp.openById("156bMWEt7CTnBGyNyhF1Mt2teyu8WFSB3_PKO9ot4vTE");
@@ -881,12 +879,21 @@ function configure() {
 	buildRequiredElementList(element);
   });
 
-// Configure auton screen
+// ==========================================
+  // Configure QUANTITATIVE screen (Auton + Teleop + Endgame)
+  // ==========================================
   var ac = mydata.auton;
   var at = document.getElementById("auton_table");
   var idx = 0;
 
-  // NEW CODE: Add Capacity Display to Auto
+// ==========================================
+  // Configure QUANTITATIVE screen (Auton + Teleop + Endgame)
+  // ==========================================
+  var ac = mydata.auton;
+  var at = document.getElementById("auton_table");
+  var idx = 0;
+
+  // Capacity Display at the very top of the page
   var autoRow = at.insertRow(idx++);
   var autoCell = autoRow.insertCell(0);
   autoCell.colSpan = 2;
@@ -896,38 +903,46 @@ function configure() {
   autoCell.id = "auto_capacity_display";
   autoCell.innerHTML = "Team Fuel Capacity: --";
 
-  // KEEP THIS: This builds the rest of the buttons
+  // --- ADD AUTON HEADER & LINE ---
+  var autonHeadRow = at.insertRow(idx++);
+  var autonHeadCell = autonHeadRow.insertCell(0);
+  autonHeadCell.colSpan = 2;
+  autonHeadCell.innerHTML = "<br><hr><h2 style='margin: 5px 0;'>AUTON PHASE</h2><hr>";
+  autonHeadCell.style.textAlign = "center";
+
+  // 1. Build Auton Buttons
   ac.forEach(element => {
     idx = addElement(at, idx, element);
   });
 
-  // Configure teleop screen
- // Configure teleop screen
+  // --- ADD TELEOP HEADER & LINE ---
+  var teleopHeadRow = at.insertRow(idx++);
+  var teleopHeadCell = teleopHeadRow.insertCell(0);
+  teleopHeadCell.colSpan = 2;
+  teleopHeadCell.innerHTML = "<br><hr><h2 style='margin: 5px 0;'>TELEOP PHASE</h2><hr>";
+  teleopHeadCell.style.textAlign = "center";
+
+  // 3. Build Teleop Buttons
   var tc = mydata.teleop;
-  var tt = document.getElementById("teleop_table");
-  var idx = 0;
-
-  // NEW CODE: Add Capacity Display to Teleop
-  var teleopRow = tt.insertRow(idx++);
-  var teleopCell = teleopRow.insertCell(0);
-  teleopCell.colSpan = 2;
-  teleopCell.style.textAlign = "center";
-  teleopCell.style.fontWeight = "bold";
-  teleopCell.style.color = "black"; 
-  teleopCell.id = "teleop_capacity_display";
-  teleopCell.innerHTML = "Team Fuel Capacity: --";
-
-  // KEEP THIS: This builds the rest of the buttons
   tc.forEach(element => {
-    idx = addElement(tt, idx, element);
+    idx = addElement(at, idx, element);
   });
 
-  // Configure endgame screen
+  // --- ADD ENDGAME HEADER & LINE ---
+  var endgameHeadRow = at.insertRow(idx++);
+  var endgameHeadCell = endgameHeadRow.insertCell(0);
+  endgameHeadCell.colSpan = 2;
+  endgameHeadCell.innerHTML = "<br><hr><h2 style='margin: 5px 0;'>ENDGAME PHASE</h2><hr>";
+  endgameHeadCell.style.textAlign = "center";
+
+  // 5. Build Endgame Buttons (And hide the Fuel counter!)
   var egc = mydata.endgame;
-  var egt = document.getElementById("endgame_table");
-  idx = 0;
   egc.forEach(element => {
-    idx = addElement(egt, idx, element);
+    // This if-statement checks the name of the button. 
+    // If it contains the word "Fuel" (case-insensitive), it skips building it!
+    if (!element.name.toLowerCase().includes("fuel")) {
+      idx = addElement(at, idx, element);
+    }
   });
 
   // Configure postmatch screen
@@ -1610,44 +1625,59 @@ window.onload = function () {
 // NEW CODE: Update Fuel Capacity Display (Diagnostic Version)
 // ==========================================
 function updateCapacityDisplay() {
-  console.log("1. updateCapacityDisplay function triggered!"); 
-  
   var teamInput = document.getElementById("input_t");
-  if (!teamInput) {
-    console.error("2. ERROR: Could not find the team input box (id 'input_t').");
-    return; 
-  }
+  if (!teamInput) return; 
   
   var teamStr = teamInput.value.toString().trim();
-  console.log("2. Found team input. Scouter typed: '" + teamStr + "'");
-  
-  var cap = "Unknown";
-  if (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) {
-    cap = teamFuelCapacity[teamStr];
-  }
-  console.log("3. Calculated capacity for this team: " + cap);
+  var cap = (typeof teamFuelCapacity !== 'undefined' && teamFuelCapacity[teamStr]) ? teamFuelCapacity[teamStr] : "Unknown";
   
   var displayStr = "Team " + teamStr + " Fuel Capacity: " + cap;
   if (teamStr === "") displayStr = "Team Fuel Capacity: --";
 
   var autoDisplay = document.getElementById("auto_capacity_display");
-  var teleopDisplay = document.getElementById("teleop_capacity_display");
-  
   if (autoDisplay) {
     autoDisplay.innerHTML = displayStr;
-    console.log("4. Successfully updated Auto HTML!");
-  } else {
-    console.error("4. ERROR: Could not find auto_capacity_display in the HTML.");
-  }
-  
-  if (teleopDisplay) {
-    teleopDisplay.innerHTML = displayStr;
-    console.log("5. Successfully updated Teleop HTML!");
-  } else {
-    console.error("5. ERROR: Could not find teleop_capacity_display in the HTML.");
   }
 }
+// ==========================================
+// OVERRIDE: Bulletproof Clear Form Function
+// ==========================================
+function clearForm() {
+  if (confirm("Are you sure you want to clear the form?")) {
+    // 1. Wipe the data from the form
+    document.getElementById("scoutingForm").reset();
 
+    // 2. Clear the QR Code visual so it doesn't try to validate empty data
+    var qrCodeDiv = document.getElementById("qrcode");
+    if (qrCodeDiv) qrCodeDiv.innerHTML = "";
+    var dataDiv = document.getElementById("data");
+    if (dataDiv) dataDiv.innerHTML = "";
+
+    // 3. Reset the "Robot" radio buttons cleanly
+    if (typeof resetRobot === "function") {
+      resetRobot();
+    }
+
+    // 4. Send the scouter safely back to the very first page
+    var panels = document.getElementsByClassName("main-panel");
+    for (var i = 0; i < panels.length; i++) {
+      panels[i].style.display = "none";
+    }
+    if (panels.length > 0) {
+      panels[0].style.display = "block";
+    }
+    
+    // 5. Reset the internal page counter back to 0
+    if (typeof slide !== "undefined") {
+      slide = 0;
+    }
+
+    // 6. Reset your custom capacity text
+    if (typeof updateCapacityDisplay === "function") {
+      updateCapacityDisplay();
+    }
+  }
+}
 
 
 
