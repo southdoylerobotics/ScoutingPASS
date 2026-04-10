@@ -1599,7 +1599,7 @@ function clearForm() {
         window.scrollTo(0, 0);
     }
 }
-
+var qr = new QRCode(document.getElementById("qrcode"), options);
 
 
 
