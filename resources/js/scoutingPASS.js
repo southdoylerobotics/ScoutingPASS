@@ -1071,45 +1071,48 @@ function updateQRHeader() {
 
 
 function qr_regenerate() {
-  if (!pitScouting) {  
-    if (validateData() == false) {
-      // If you want to FORCE the swipe during testing even if validation fails, 
-      // change 'return false' to 'return true'. 
-      // Otherwise, you MUST fill out Match, Scouter, and Robot to move.
-      return false; 
+    // Safety check: if validateData is missing or failing, log it but don't kill the app
+    try {
+        if (!pitScouting) {
+            if (typeof validateData === 'function' && validateData() == false) {
+                return false;
+            }
+        }
+    } catch (e) {
+        console.error("Validation error: ", e);
     }
-  }
 
-  var data = getData(dataFormat);
+    // Get data
+    var data = "";
+    try {
+        data = getData(dataFormat);
+    } catch (e) {
+        console.error("getData error: ", e);
+        data = "ERROR_GETTING_DATA";
+    }
 
-  // PWNAGE FIX: Ensure qr exists before calling makeCode
-  if (typeof qr !== 'undefined' && qr !== null) {
-      qr.makeCode(data);
-  }
+    // PWNAGE Safety: If 'qr' isn't initialized yet, try to do it now
+    try {
+        if (typeof qr === 'undefined' || qr === null) {
+            var qrElement = document.getElementById("qrcode");
+            if (qrElement) {
+                qr = new QRCode(qrElement, options);
+            }
+        }
+        
+        if (qr && typeof qr.makeCode === 'function') {
+            qr.makeCode(data);
+        }
+    } catch (e) {
+        console.error("QR Generation error: ", e);
+    }
 
-  updateQRHeader();
-  return true;
-}
+    // Always try to update header, but wrap in try/catch
+    try {
+        updateQRHeader();
+    } catch (e) {}
 
-  var data = getData(dataFormat);
-
-  // PWNAGE FIX: Ensure qr exists before calling makeCode
-  if (typeof qr !== 'undefined' && qr !== null) {
-      qr.makeCode(data);
-  }
-
-  updateQRHeader();
-  return true;
-}
-
-  // Get data
-  data = getData(dataFormat)
-
-  // Regenerate QR Code
-  qr.makeCode(data)
-
-  updateQRHeader()
-  return true
+    return true; // Return true so swipePage can actually move
 }
 
 function qr_clear() {
