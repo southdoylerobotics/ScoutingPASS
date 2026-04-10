@@ -812,19 +812,57 @@ function buildRequiredElementList(element) {
 }
 
 function configure() {
-  try {
-    var mydata = JSON.parse(config_data);
-  } catch (err) {
-    console.log(`Error parsing configuration file`)
-    console.log(err.message)
-    console.log('Use a tool like http://jsonlint.com/ to help you debug your config file')
-    var table = document.getElementById("prematch_table")
-    var row = table.insertRow(0);
-    var cell1 = row.insertCell(0);
-	cell1.style.width = ColWidth;
-    cell1.innerHTML = `Error parsing configuration file: ${err.message}<br><br>Use a tool like <a href="http://jsonlint.com/">http://jsonlint.com/</a> to help you debug your config file`
-    return -1
-  }
+    if (typeof config_data === 'string') {
+        config = JSON.parse(config_data);
+    } else {
+        config = config_data;
+    }
+
+    dataFormat = config.dataFormat;
+    pitScouting = config.title.toLowerCase().includes("pit");
+    slide = 0;
+
+    const sections = ['prematch', 'auton', 'teleop', 'endgame', 'postmatch'];
+    
+    sections.forEach(section => {
+        let table = document.getElementById(section + "_table");
+        if (!table) return;
+        
+        config[section].forEach(item => {
+            let row = table.insertRow(-1);
+            let cell1 = row.insertCell(0);
+            let cell2 = row.insertCell(1);
+            
+            cell1.innerHTML = `<label>${item.name}</label>`;
+            
+            // Handle ALL types from your config
+            if (['text', 'number', 'scouter', 'team', 'match', 'event'].includes(item.type)) {
+                let val = item.defaultValue ? item.defaultValue : "";
+                cell2.innerHTML = `<input type="${item.type === 'number' ? 'number' : 'text'}" id="input_${item.code}" value="${val}" class="${item.type}">`;
+            
+            } else if (item.type === 'bool') {
+                cell2.innerHTML = `<input type="checkbox" id="input_${item.code}">`;
+            
+            } else if (['radio', 'robot', 'level'].includes(item.type)) {
+                let options = "";
+                for (let key in item.choices) {
+                    let checked = (key === item.defaultValue) ? "checked" : "";
+                    options += `<input type="radio" name="input_${item.code}" id="input_${item.code}_${key}" value="${key}" ${checked}> ${item.choices[key]} `;
+                }
+                cell2.innerHTML = options;
+            
+            } else if (item.type === 'counter') {
+                cell2.innerHTML = `
+                    <div class="counter-container">
+                        <button type="button" class="btn-down" onclick="let inp=this.parentNode.querySelector('input'); if(inp.value > 0) inp.value--;">-</button>
+                        <input type="number" id="input_${item.code}" class="counter" value="0" readonly>
+                        <button type="button" class="btn-up" onclick="this.parentNode.querySelector('input').value++;">+</button>
+                    </div>`;
+            }
+        });
+    });
+    return 1;
+}
 
   if(mydata.hasOwnProperty('dataFormat')) {
     dataFormat = mydata.dataFormat;
@@ -1032,69 +1070,25 @@ function getData(dataFormat) {
 }
 
 function updateQRHeader() {
-  // 1. Define the template
-  let str = 'Event: !EVENT! Match: !MATCH! Robot: !ROBOT! Team: !TEAM!';
+  // The ?.value syntax prevents the "Cannot read properties of null" error
+  let eventVal = document.getElementById("input_e")?.value || "???";
+  let matchVal = document.getElementById("input_m")?.value || "???";
+  let teamVal  = document.getElementById("input_t")?.value || "???";
+  
+  // Look for the selected radio button for robot
+  let robotEl = document.querySelector('input[name="input_r"]:checked');
+  let robotVal = robotEl ? robotEl.value : "???";
 
-  // 2. Helper function to safely fetch values without crashing
-  const getSafeValue = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      return el.value || "???";
-    }
-    return "???";
-  };
+  let str = `Event: ${eventVal} Match: ${matchVal} Robot: ${robotVal} Team: ${teamVal}`;
 
-  // 3. Special handling for the Robot field 
-  // (In your config, this is a radio button group named "input_r")
-  const getRobotValue = () => {
-    const checkedRadio = document.querySelector('input[name="input_r"]:checked');
-    if (checkedRadio) {
-      return checkedRadio.value;
-    }
-    // Check if there's a fallback display element
-    const displayR = document.getElementById("display_r");
-    if (displayR) return displayR.value;
-    
-    return "???";
-  };
-
-  // 4. Build the string based on the scouting mode
-  if (typeof pitScouting !== 'undefined' && !pitScouting) {
-    str = str
-      .replace('!EVENT!', getSafeValue("input_e"))
-      .replace('!MATCH!', getSafeValue("input_m"))
-      .replace('!ROBOT!', getRobotValue())
-      .replace('!TEAM!', getSafeValue("input_t"));
-  } else {
-    str = 'Pit Scouting - Team !TEAM!'
-      .replace('!TEAM!', getSafeValue("input_t"));
+  if (typeof pitScouting !== 'undefined' && pitScouting) {
+    str = `Pit Scouting - Team ${teamVal}`;
   }
 
-  // 5. Safely update the HTML span
-  const qrInfoDisplay = document.getElementById("display_qr-info");
-  if (qrInfoDisplay) {
-    qrInfoDisplay.textContent = str;
-  } else {
-    console.warn("Could not find 'display_qr-info' element to update header.");
+  let displayEl = document.getElementById("display_qr-info");
+  if (displayEl) {
+    displayEl.textContent = str;
   }
-}
-function qr_regenerate() {
-  // Validate required pre-match date (event, match, level, robot, scouter)
-  if (!pitScouting) {  
-    if (validateData() == false) {
-      // Don't allow a swipe until all required data is filled in
-      return false
-    }
-  }
-
-  // Get data
-  data = getData(dataFormat)
-
-  // Regenerate QR Code
-  qr.makeCode(data)
-
-  updateQRHeader()
-  return true
 }
 
 function qr_clear() {
