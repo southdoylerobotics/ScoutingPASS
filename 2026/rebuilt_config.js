@@ -6,7 +6,7 @@ var config_data = `{
   "prematch": [
     { "name": "Scouter Initials", "code": "s", "type": "scouter", "size": 5, "maxSize": 5, "required": "true" },
     { "name": "Your Team #", "code": "yt", "type": "number", "min": 1, "max": 9999 },
-    { "name": "Event", "code": "e", "type": "event", "defaultValue": "2026tnkn", "required": "true" },
+    { "name": "Event", "code": "e", "type": "event", "defaultValue": "2026hop", "required": "true" },
     { "name": "Match Level", "code": "l", "type": "level", "choices": { "qm": "Quals<br>", "sf": "Semifinals<br>", "f": "Finals" }, "defaultValue": "qm", "required": "true" },
     { "name": "Match #", "code": "m", "type": "match", "min": 1, "max": 150, "required": "true" },
     { "name": "Robot", "code": "r", "type": "robot", "choices": { "r1": "Red-1", "b1": "Blue-1<br>", "r2": "Red-2", "b2": "Blue-2<br>", "r3": "Red-3", "b3": "Blue-3" }, "required": "true" },
@@ -19,7 +19,6 @@ var config_data = `{
   ],
   "teleop": [
     { "name": "Fuel Scored", "code": "tsf", "type": "counter", "hopperButtons": true },
-    { "name": "Fuel Scored: End Game", "code": "egf", "type": "counter", "hopperButtons": true },
     { "name": "Pass from Neutral Zone", "code": "pnz", "type": "bool" },
     { "name": "Pass from Opp<br>Alliance Zone", "code": "poa", "type": "bool" }
   ],
